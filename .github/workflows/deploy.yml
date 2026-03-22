@@ -1,40 +1,28 @@
-name: Health Check
+name: Verify Files
 
 on:
   push:
     branches: [main]
-  schedule:
-    - cron: '0 12 * * *'
+  pull_request:
+    branches: [main]
 
 jobs:
-  check:
-    name: Verify files are valid
+  verify:
+    name: Verify HTML Files
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Validate HTML files
+      - name: Check required files exist
         run: |
-          echo "Checking HTML files..."
-          for f in *.html; do
-            size=$(wc -c < "$f")
-            echo "  $f: ${size} bytes"
-            if [ "$size" -lt 1000 ]; then
-              echo "WARNING: $f seems too small"
-            fi
-          done
-          echo "All files present and accounted for."
-
-      - name: Summary
-        run: |
-          echo "## Suhey Academy File Status" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| File | Size |" >> $GITHUB_STEP_SUMMARY
-          echo "|------|------|" >> $GITHUB_STEP_SUMMARY
-          for f in *.html; do
-            size=$(du -sh "$f" | cut -f1)
-            echo "| $f | $size |" >> $GITHUB_STEP_SUMMARY
-          done
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Deploy:** Handled automatically by Netlify on push to main" >> $GITHUB_STEP_SUMMARY
-          echo "**Site:** https://suhey-academy.netlify.app" >> $GITHUB_STEP_SUMMARY
+          echo "Checking required files..."
+          test -f index.html && echo "OK: index.html" || (echo "MISSING: index.html" && exit 1)
+          test -f suhey_podcast.html && echo "OK: suhey_podcast.html" || echo "WARN: suhey_podcast.html missing"
+          test -f suhey_upload.html && echo "OK: suhey_upload.html" || echo "WARN: suhey_upload.html missing"
+          test -f netlify.toml && echo "OK: netlify.toml" || echo "WARN: netlify.toml missing"
+          echo ""
+          echo "File sizes:"
+          wc -c index.html suhey_podcast.html suhey_upload.html 2>/dev/null || true
+          echo ""
+          echo "Deploy route: Netlify GitHub App (no secrets required)"
+          echo "Connect at: app.netlify.com -> Add new site -> Import from Git"
