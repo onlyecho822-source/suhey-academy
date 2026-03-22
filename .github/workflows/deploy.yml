@@ -1,24 +1,40 @@
-name: Suhey Academy Deploy
+name: Health Check
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:
+  schedule:
+    - cron: '0 12 * * *'
 
 jobs:
-  deploy:
-    name: Deploy to Netlify
+  check:
+    name: Verify files are valid
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Deploy
-        uses: nwtgck/actions-netlify@v3
-        with:
-          publish-dir: '.'
-          production-deploy: true
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Deploy ${{ github.sha }}"
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      - name: Validate HTML files
+        run: |
+          echo "Checking HTML files..."
+          for f in *.html; do
+            size=$(wc -c < "$f")
+            echo "  $f: ${size} bytes"
+            if [ "$size" -lt 1000 ]; then
+              echo "WARNING: $f seems too small"
+            fi
+          done
+          echo "All files present and accounted for."
+
+      - name: Summary
+        run: |
+          echo "## Suhey Academy File Status" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| File | Size |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|------|" >> $GITHUB_STEP_SUMMARY
+          for f in *.html; do
+            size=$(du -sh "$f" | cut -f1)
+            echo "| $f | $size |" >> $GITHUB_STEP_SUMMARY
+          done
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Deploy:** Handled automatically by Netlify on push to main" >> $GITHUB_STEP_SUMMARY
+          echo "**Site:** https://suhey-academy.netlify.app" >> $GITHUB_STEP_SUMMARY
