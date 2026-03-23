@@ -520,6 +520,261 @@ footer{background:var(--ink);padding:24px 20px;border-top:1.5px solid rgba(255,2
   </div>
 </section>
 
+
+<!-- WORD DROP TRANSLATION — Dominican Style -->
+<section class="sec" id="worddrop-sec" style="background:var(--ink);overflow:hidden;position:relative;padding:80px 0">
+  <!-- DR flag color accent bar -->
+  <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#002d62 33%,#fff 33%,#fff 66%,#ce1126 66%)"></div>
+
+  <!-- floating bg letters -->
+  <div aria-hidden="true" style="position:absolute;inset:0;overflow:hidden;opacity:.04;font-family:'Bebas Neue',sans-serif;font-size:180px;color:#fff;display:flex;align-items:center;justify-content:center;letter-spacing:.1em;pointer-events:none;user-select:none">DR</div>
+
+  <div style="max-width:700px;margin:0 auto;padding:0 24px;text-align:center">
+    <!-- section label -->
+    <p style="font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold2);margin-bottom:16px" data-lang="en">Live Translation</p>
+    <p style="font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold2);margin-bottom:16px" data-lang="es">Traduccion en Vivo</p>
+
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,6vw,52px);color:#fff;line-height:1;margin-bottom:8px" data-lang="en">See it drop.<br>Feel it click.</h2>
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,6vw,52px);color:#fff;line-height:1;margin-bottom:8px" data-lang="es">Miralo caer.<br>Sientelo encajar.</h2>
+
+    <p style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:48px;font-style:italic" data-lang="en">Dominican phrases — word by word, the way your brain actually learns.</p>
+    <p style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:48px;font-style:italic" data-lang="es">Frases dominicanas — palabra por palabra, como tu cerebro realmente aprende.</p>
+
+    <!-- Word drop display -->
+    <div id="wdrop-container" style="min-height:240px;position:relative;margin-bottom:40px">
+      <!-- EN row -->
+      <div id="wdrop-en-row" style="display:flex;justify-content:center;align-items:flex-start;gap:6px;flex-wrap:wrap;margin-bottom:20px;min-height:60px"></div>
+      <!-- divider line -->
+      <div id="wdrop-line" style="height:1.5px;background:rgba(255,255,255,.15);margin:0 auto 20px;max-width:400px;opacity:0;transition:opacity .4s"></div>
+      <!-- ES row -->
+      <div id="wdrop-es-row" style="display:flex;justify-content:center;align-items:flex-start;gap:6px;flex-wrap:wrap;min-height:60px"></div>
+    </div>
+
+    <!-- phrase selector pills -->
+    <div id="wdrop-pills" style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:32px"></div>
+
+    <!-- play/pause button -->
+    <button id="wdrop-btn" onclick="wdropToggle()" style="background:var(--gold2);color:var(--ink);border:none;padding:14px 36px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.1em;cursor:pointer;transition:opacity .2s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+      <span data-lang="en">REPLAY</span>
+      <span data-lang="es">REPETIR</span>
+    </button>
+  </div>
+
+  <style>
+    .wd-word{
+      display:inline-flex;
+      flex-direction:column;
+      align-items:center;
+      opacity:0;
+      transform:translateY(-28px);
+      transition:opacity .35s ease, transform .35s ease;
+      min-width:60px;
+    }
+    .wd-word.visible{opacity:1;transform:translateY(0)}
+    .wd-eng{
+      font-family:'DM Sans',sans-serif;
+      font-size:clamp(18px,4vw,26px);
+      font-weight:700;
+      color:#fff;
+      line-height:1;
+    }
+    .wd-sep{
+      width:2px;height:20px;
+      background:var(--gold2);
+      margin:6px auto;
+      opacity:.6;
+    }
+    .wd-esp{
+      font-family:'DM Serif Display',serif;
+      font-size:clamp(16px,3.5vw,22px);
+      color:var(--gold2);
+      font-style:italic;
+      line-height:1;
+    }
+    .wdrop-pill{
+      padding:6px 16px;
+      border:1px solid rgba(255,255,255,.2);
+      background:rgba(255,255,255,.06);
+      color:rgba(255,255,255,.6);
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      cursor:pointer;
+      transition:all .15s;
+      font-family:'DM Sans',sans-serif;
+    }
+    .wdrop-pill:hover,.wdrop-pill.active{
+      background:var(--gold2);
+      color:var(--ink);
+      border-color:var(--gold2);
+    }
+  </style>
+
+  <script>
+  (function(){
+    var PHRASES = [
+      {
+        label:"Greeting",
+        en:["What's","up","bro?"],
+        es:["Que","lo","que?"]
+      },
+      {
+        label:"All good",
+        en:["Everything","is","good","bro"],
+        es:["Ta","to'","bien","manin"]
+      },
+      {
+        label:"Let's go",
+        en:["Let's","go","to","the","colmado"],
+        es:["Vamo","pal","colmado","ahora"]
+      },
+      {
+        label:"No rush",
+        en:["Relax","no","rush"],
+        es:["Tranquilo","no","hay","que","apresurarse"]
+      },
+      {
+        label:"So pretty",
+        en:["This","place","is","beautiful"],
+        es:["Este","lugar","ta","cabron"]
+      },
+      {
+        label:"My friend",
+        en:["Hey","my","friend"],
+        es:["Oye","mi","pana"]
+      }
+    ];
+
+    var current = 0;
+    var timer = null;
+    var running = false;
+    var stepIdx = 0;
+
+    function getContainer() {
+      return {
+        enRow: document.getElementById('wdrop-en-row'),
+        esRow: document.getElementById('wdrop-es-row'),
+        line: document.getElementById('wdrop-line')
+      };
+    }
+
+    function buildPills() {
+      var wrap = document.getElementById('wdrop-pills');
+      wrap.innerHTML = '';
+      PHRASES.forEach(function(p, i) {
+        var btn = document.createElement('button');
+        btn.className = 'wdrop-pill' + (i === current ? ' active' : '');
+        btn.textContent = p.label;
+        btn.onclick = function() {
+          current = i;
+          document.querySelectorAll('.wdrop-pill').forEach(function(b,j){
+            b.classList.toggle('active', j===i);
+          });
+          resetAndPlay();
+        };
+        wrap.appendChild(btn);
+      });
+    }
+
+    function clearDisplay() {
+      var c = getContainer();
+      c.enRow.innerHTML = '';
+      c.esRow.innerHTML = '';
+      c.line.style.opacity = '0';
+      stepIdx = 0;
+    }
+
+    function makeWordEl(engWord, espWord) {
+      var div = document.createElement('div');
+      div.className = 'wd-word';
+
+      var e = document.createElement('span');
+      e.className = 'wd-eng';
+      e.textContent = engWord;
+
+      var sep = document.createElement('div');
+      sep.className = 'wd-sep';
+
+      var s = document.createElement('span');
+      s.className = 'wd-esp';
+      s.textContent = espWord;
+
+      div.appendChild(e);
+      div.appendChild(sep);
+      div.appendChild(s);
+      return div;
+    }
+
+    function playStep() {
+      var phrase = PHRASES[current];
+      var maxLen = Math.max(phrase.en.length, phrase.es.length);
+      var c = getContainer();
+
+      if (stepIdx >= maxLen) {
+        // done — show line
+        c.line.style.opacity = '1';
+        running = false;
+        // auto advance to next phrase after 2.8s
+        timer = setTimeout(function(){
+          current = (current + 1) % PHRASES.length;
+          document.querySelectorAll('.wdrop-pill').forEach(function(b,j){
+            b.classList.toggle('active', j===current);
+          });
+          resetAndPlay();
+        }, 2800);
+        return;
+      }
+
+      var engWord = phrase.en[stepIdx] || '';
+      var espWord = phrase.es[stepIdx] || '';
+
+      var wordEl = makeWordEl(engWord, espWord);
+
+      // append to single unified row
+      c.enRow.appendChild(wordEl);
+
+      // trigger animation next frame
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          wordEl.classList.add('visible');
+        });
+      });
+
+      stepIdx++;
+      timer = setTimeout(playStep, 480);
+    }
+
+    function resetAndPlay() {
+      clearTimeout(timer);
+      clearDisplay();
+      running = true;
+      timer = setTimeout(playStep, 200);
+    }
+
+    window.wdropToggle = function() {
+      if (running) {
+        clearTimeout(timer);
+        running = false;
+      } else {
+        resetAndPlay();
+      }
+    };
+
+    // init
+    document.addEventListener('DOMContentLoaded', function(){
+      buildPills();
+      resetAndPlay();
+    });
+
+    // fallback if DOMContentLoaded already fired
+    if (document.readyState !== 'loading') {
+      buildPills();
+      resetAndPlay();
+    }
+  })();
+  </script>
+</section>
 <section class="sec method-sec" id="method-sec">
   <div class="sec-inner">
     <div class="sec-label" data-lang="en">The Method</div>
