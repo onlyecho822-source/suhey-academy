@@ -1,28 +1,26 @@
-name: Verify Files
+name: Site Verify
 
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 
 jobs:
   verify:
-    name: Verify HTML Files
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Check required files exist
+      - name: Verify site files
         run: |
-          echo "Checking required files..."
-          test -f index.html && echo "OK: index.html" || (echo "MISSING: index.html" && exit 1)
-          test -f suhey_podcast.html && echo "OK: suhey_podcast.html" || echo "WARN: suhey_podcast.html missing"
-          test -f suhey_upload.html && echo "OK: suhey_upload.html" || echo "WARN: suhey_upload.html missing"
-          test -f netlify.toml && echo "OK: netlify.toml" || echo "WARN: netlify.toml missing"
-          echo ""
-          echo "File sizes:"
-          wc -c index.html suhey_podcast.html suhey_upload.html 2>/dev/null || true
-          echo ""
-          echo "Deploy route: Netlify GitHub App (no secrets required)"
-          echo "Connect at: app.netlify.com -> Add new site -> Import from Git"
+          echo "=== Suhey Academy File Check ==="
+          for f in index.html netlify.toml; do
+            if [ -f "$f" ]; then
+              size=$(wc -c < "$f")
+              echo "OK: $f ($size bytes)"
+            else
+              echo "MISSING: $f"
+            fi
+          done
+          echo "=== Placeholder Check ==="
+          count=$(grep -c 'YOUR_' index.html 2>/dev/null || echo 0)
+          echo "Unfilled placeholders: $count"
+          echo "=== Done ==="
