@@ -1,0 +1,61 @@
+name: Repository Health Check
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check repository health
+        run: |
+          echo "## Repository Health Check" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Check for package.json
+          if [ -f package.json ]; then
+            echo "✓ package.json found" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠ No package.json" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # Check for pnpm-lock.yaml or package-lock.json
+          if [ -f pnpm-lock.yaml ]; then
+            echo "✓ pnpm-lock.yaml found" >> $GITHUB_STEP_SUMMARY
+          elif [ -f package-lock.json ]; then
+            echo "✓ package-lock.json found" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠ No lockfile detected" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # Check for .gitignore
+          if [ -f .gitignore ]; then
+            echo "✓ .gitignore present" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠ No .gitignore" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # Check for README
+          if [ -f README.md ]; then
+            echo "✓ README.md present" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠ No README.md" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # Check for LICENSE
+          if [ -f LICENSE ] || [ -f LICENSE.md ]; then
+            echo "✓ LICENSE found" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠ No LICENSE" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### File count" >> $GITHUB_STEP_SUMMARY
+          echo "Total files: $(find . -not -path '*/\.*' -type f | wc -l)" >> $GITHUB_STEP_SUMMARY
