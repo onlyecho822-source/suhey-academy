@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Suhey Academy — Spanish Language Certification</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#002D62;--red:#CE1126;--gold:#C8960C;--ink:#0D1117;--paper:#FAFAF7;--cream:#F2EDE3;--g1:#F5F3EE;--g2:#E8E4DC;--g3:#B0AAA0;--g4:#6B6560;--serif:'Cormorant Garamond',Georgia,serif;--sans:'Plus Jakarta Sans',sans-serif;--mono:'DM Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:var(--sans);background:var(--paper);color:var(--ink)}
+nav{background:var(--navy);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;position:sticky;top:0;z-index:200}
+.nav-brand{font-family:var(--serif);font-size:20px;font-weight:600;color:#fff;display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-flag{width:30px;height:20px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+.nf1,.nf4{background:var(--navy);border:1px solid rgba(255,255,255,.3)}.nf2,.nf3{background:var(--red)}
+.nav-links{display:flex;gap:24px}.nav-links a{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.55);text-decoration:none;transition:color .15s}.nav-links a:hover{color:#fff}
+.nav-cta{padding:7px 18px;background:var(--gold);color:var(--navy);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;transition:opacity .15s}.nav-cta:hover{opacity:.85;color:var(--navy)}
+.flag-stripe{height:4px;background:linear-gradient(90deg,var(--navy) 33.3%,#fff 33.3%,#fff 66.6%,var(--red) 66.6%)}
+.hero{background:var(--navy);padding:70px 40px 80px;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;right:-80px;top:-80px;width:500px;height:500px;border-radius:50%;background:rgba(200,150,12,.05);pointer-events:none}
+.hero-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 320px;gap:64px;align-items:center}
+.hero-tag{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.hero-h1{font-family:var(--serif);font-size:clamp(34px,4.5vw,54px);font-weight:600;color:#fff;line-height:1.08;margin-bottom:18px}
+.hero-h1 em{color:var(--gold);font-style:italic}
+.hero-p{font-size:14px;color:rgba(255,255,255,.5);line-height:1.8;margin-bottom:24px;max-width:440px}
+.instructor-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);padding:20px;margin-bottom:24px}
+.ic-top{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+.ic-avatar{width:50px;height:50px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:20px;font-weight:600;color:var(--navy);flex-shrink:0}
+.ic-name{font-size:14px;font-weight:600;color:#fff;margin-bottom:2px}.ic-title{font-size:11px;color:rgba(255,255,255,.5);line-height:1.5}
+.ic-degrees{display:flex;flex-direction:column;gap:5px}
+.ic-degree{display:flex;gap:8px;align-items:flex-start;font-size:11px;color:rgba(255,255,255,.55);line-height:1.4}
+.ic-deg-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);margin-top:4px;flex-shrink:0}
+.ic-deg-text strong{color:rgba(255,255,255,.8);font-weight:500}
+.cert-mockup{background:#fff;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.cm-stripe{height:4px;background:linear-gradient(90deg,var(--navy) 33%,#fff 33%,#fff 66%,var(--red) 66%);margin:-24px -24px 18px -24px}
+.cm-seal{width:44px;height:44px;border-radius:50%;border:2px solid var(--navy);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:8px;font-weight:500;color:var(--navy);text-align:center;line-height:1.3;margin:0 auto 12px}
+.cm-title{font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--g3);text-align:center;margin-bottom:8px}
+.cm-name{font-family:var(--serif);font-size:22px;font-weight:600;color:var(--ink);text-align:center;margin-bottom:6px}
+.cm-earned{font-size:10px;color:var(--g4);text-align:center;margin-bottom:12px;line-height:1.5}
+.cm-level{display:block;background:var(--navy);color:#fff;font-family:var(--mono);font-size:9px;letter-spacing:.1em;padding:6px 20px;text-align:center;margin-bottom:14px}
+.cm-sigs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid var(--g2)}
+.cm-sig-line{height:1px;background:var(--g2);margin-bottom:4px}
+.cm-sig-name{font-size:10px;font-weight:600;color:var(--ink)}.cm-sig-title{font-size:9px;color:var(--g4);line-height:1.4}
+.cm-id{font-family:var(--mono);font-size:8px;color:var(--g3);text-align:center;margin-top:10px}
+.track-section{padding:56px 40px 0;max-width:1000px;margin:0 auto}
+.track-head{text-align:center;margin-bottom:32px}
+.track-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.track-h2{font-family:var(--serif);font-size:34px;font-weight:600;color:var(--ink);margin-bottom:10px}
+.track-p{font-size:13px;color:var(--g4);max-width:520px;margin:0 auto}
+.tracks{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:48px}
+.track-card{border:2px solid var(--g2);padding:28px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.track-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:4px;opacity:0;transition:opacity .2s}
+.track-card.gen::before{background:var(--navy)}.track-card.dr::before{background:var(--red)}
+.track-card:hover,.track-card.active{border-color:var(--navy)}.track-card.active.dr{border-color:var(--red)}.track-card.en::before{background:#0F6E56}.track-card.active.en{border-color:#0F6E56}
+.track-card:hover::before,.track-card.active::before{opacity:1}
+.tc-tag{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--g3);margin-bottom:10px;display:flex;gap:8px;align-items:center}
+.tc-dot{width:8px;height:8px;border-radius:50%}
+.tc-h3{font-family:var(--serif);font-size:22px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.tc-sub{font-size:12px;color:var(--g4);margin-bottom:16px;line-height:1.5}
+.tc-features{display:flex;flex-direction:column;gap:5px}
+.tc-feat{font-size:11px;color:var(--g4);display:flex;gap:8px;align-items:flex-start}.tc-feat-dot{color:var(--gold);font-size:14px;line-height:1;flex-shrink:0}
+.tc-chosen{position:absolute;top:14px;right:14px;background:var(--navy);color:#fff;font-family:var(--mono);font-size:8px;letter-spacing:.1em;padding:3px 8px;display:none}
+.track-card.active .tc-chosen{display:block}.track-card.active.dr .tc-chosen{background:var(--red)}
+.dual-banner{background:var(--cream);border:1px solid var(--g2);padding:28px 32px;max-width:1000px;margin:0 auto 16px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
+.db-title{font-family:var(--serif);font-size:20px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.db-body{font-size:12px;color:var(--g4);line-height:1.6}
+.db-price{text-align:right}.db-was{font-size:11px;color:var(--g3);text-decoration:line-through;margin-bottom:2px}
+.db-now{font-family:var(--serif);font-size:28px;font-weight:600;color:var(--navy)}
+.db-save{font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--gold);margin-top:2px}
+.db-btn{display:block;margin-top:10px;padding:10px 22px;background:var(--navy);color:#fff;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border:none;cursor:pointer;font-family:var(--sans);white-space:nowrap;transition:opacity .15s}.db-btn:hover{opacity:.85}
+.levels-section{max-width:1000px;margin:0 auto;padding:0 40px 64px}
+.levels-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px;padding-top:32px}
+.lh-title{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--ink)}
+.lh-count{font-family:var(--mono);font-size:11px;color:var(--g3)}
+.level-rows{display:flex;flex-direction:column;gap:10px}
+.level-row{display:grid;grid-template-columns:72px 1fr 100px 120px;border:1px solid var(--g2);align-items:stretch;transition:border-color .15s;cursor:pointer}.level-row:hover{border-color:var(--navy)}
+.lr-badge{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 8px;border-right:1px solid var(--g2)}
+.lr-roman{font-family:var(--serif);font-size:26px;font-weight:600;line-height:1}.lr-stars{font-size:9px;letter-spacing:2px;margin-top:3px;color:var(--g3)}
+.lr-body{padding:16px 18px;border-right:1px solid var(--g2)}
+.lr-name{font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.lr-cefr{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--g3);margin-bottom:5px}
+.lr-desc{font-size:11px;color:var(--g4);line-height:1.5}
+.lr-price{padding:16px 14px;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;border-right:1px solid var(--g2)}
+.lr-amount{font-family:var(--serif);font-size:20px;font-weight:600;color:var(--ink)}.lr-note{font-size:10px;color:var(--g3);margin-top:2px;text-align:right}
+.lr-action{padding:16px;display:flex;align-items:center;justify-content:center}
+.lr-btn{padding:8px 14px;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border:1.5px solid var(--navy);color:var(--navy);background:transparent;cursor:pointer;font-family:var(--sans);white-space:nowrap;transition:all .15s}.lr-btn:hover{background:var(--navy);color:#fff}
+.lr-btn.gold-btn{border-color:var(--gold);color:var(--gold)}.lr-btn.gold-btn:hover{background:var(--gold);color:var(--navy)}
+.how-section{background:var(--g1);padding:64px 40px}
+.how-inner{max-width:1000px;margin:0 auto}
+.how-h2{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--ink);margin-bottom:8px;text-align:center}
+.how-sub{font-size:13px;color:var(--g4);text-align:center;margin-bottom:36px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.step{text-align:center;padding:0 6px}
+.step-num{width:40px;height:40px;border-radius:50%;background:var(--navy);color:#fff;font-family:var(--serif);font-size:18px;font-weight:600;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.step-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px}.step-body{font-size:11px;color:var(--g4);line-height:1.6}
+.cred-section{padding:64px 40px;max-width:1000px;margin:0 auto}
+.cred-h2{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--ink);margin-bottom:8px}
+.cred-sub{font-size:13px;color:var(--g4);margin-bottom:28px;max-width:520px}
+.cred-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.cred-card{background:var(--g1);border:1px solid var(--g2);padding:20px}
+.cc-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.cc-body{font-size:11px;color:var(--g4);line-height:1.6}
+.cc-badge{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;margin-bottom:10px}
+footer{background:var(--navy);padding:40px}
+.footer-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start}
+.footer-brand{font-family:var(--serif);font-size:18px;font-weight:600;color:#fff;margin-bottom:6px}
+.footer-sub{font-size:11px;color:rgba(255,255,255,.35);line-height:1.7}
+.footer-copy{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:rgba(255,255,255,.25);text-align:right;line-height:1.8}
+@media(max-width:768px){.hero-inner,.tracks,.steps,.cred-grid,.footer-inner{grid-template-columns:1fr}.hero-right,.nav-links{display:none}.hero,.track-section,.levels-section,.cred-section,.how-section{padding-left:20px;padding-right:20px}.dual-banner{grid-template-columns:1fr}.level-row{grid-template-columns:60px 1fr}.lr-price,.lr-action{display:none}}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--paper);max-width:540px;width:100%;padding:36px;position:relative;max-height:90vh;overflow-y:auto;transform:translateY(20px);transition:transform .2s}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:18px;cursor:pointer;color:var(--g3)}
+.modal-stripe{height:3px;background:linear-gradient(90deg,var(--navy) 33%,#fff 33%,#fff 66%,var(--red) 66%);margin:-36px -36px 24px -36px}
+.modal-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.modal-h2{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.modal-cefr{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--g3);margin-bottom:14px}
+.modal-desc{font-size:13px;color:var(--g4);line-height:1.7;margin-bottom:18px}
+.mi-label{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--g3);margin-bottom:10px}
+.mi-item{display:flex;gap:10px;font-size:12px;color:var(--g4);margin-bottom:6px;align-items:flex-start}
+.mi-dot{color:var(--gold);font-weight:700;flex-shrink:0}
+.modal-price-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-top:1px solid var(--g2);border-bottom:1px solid var(--g2);margin:18px 0}
+.mp-label{font-size:12px;color:var(--g4)}.mp-price{font-family:var(--serif);font-size:28px;font-weight:600;color:var(--ink)}
+.modal-enroll{width:100%;padding:14px;background:var(--navy);color:#fff;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;font-family:var(--sans);margin-bottom:8px;transition:opacity .15s}.modal-enroll:hover{opacity:.85}
+.modal-note{font-size:10px;color:var(--g3);text-align:center}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-brand">
+    <div class="nav-flag"><div class="nf1"></div><div class="nf2"></div><div class="nf3"></div><div class="nf4"></div></div>
+    Suhey Academy
+  </a>
+  <div class="nav-links">
+    <a href="#tracks">Tracks</a>
+    <a href="#levels">Certifications</a>
+    <a href="#how">How it works</a>
+    <a href="#credentials">Credentials</a>
+  </div>
+  <a href="#levels" class="nav-cta">Enroll now</a>
+</nav>
+<div class="flag-stripe"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">Official Spanish Language Certification · Puerto Plata, DR</div>
+      <h1 class="hero-h1">Proof you speak<br><em>real Spanish.</em><br>Two tracks. One credential.</h1>
+      <p class="hero-p">General Spanish · Dominican Spanish · English for Spanish Speakers. Three tracks. All issued by a state-employed educator with a Master of Arts in Teaching Languages — certified in both English→Spanish and Spanish→English instruction.</p>
+      <div class="instructor-card">
+        <div class="ic-top">
+          <div class="ic-avatar">S</div>
+          <div>
+            <div class="ic-name">Suhey Castillo</div>
+            <div class="ic-title">Lead Instructor · Puerto Plata, Dominican Republic<br>Active state teacher · Ministry of Education, DR</div>
+          </div>
+        </div>
+        <div class="ic-degrees">
+          <div class="ic-degree"><div class="ic-deg-dot"></div><div class="ic-deg-text"><strong>Master of Arts in Teaching Languages</strong> — English ↔ Spanish (Bilingual) · Dominican Republic</div></div>
+          <div class="ic-degree"><div class="ic-deg-dot"></div><div class="ic-deg-text"><strong>Bachelor of Education</strong> — Spanish Language &amp; Literature · Dominican Republic</div></div>
+          <div class="ic-degree"><div class="ic-deg-dot"></div><div class="ic-deg-text"><strong>State-certified educator</strong> — Active teacher in DR public school system · Ministry of Education · Certified in both English and Spanish language instruction</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="cert-mockup">
+        <div class="cm-stripe"></div>
+        <div class="cm-seal">SUHEY<br>ACAD.</div>
+        <div class="cm-title">Certificate of Spanish Language Proficiency</div>
+        <div class="cm-name">Your Name Here</div>
+        <div class="cm-earned">has demonstrated certified proficiency in Spanish<br>as examined by Suhey Academy · Puerto Plata, DR</div>
+        <div class="cm-level">Pana — Level III · CEFR B1–B2</div>
+        <div style="font-family:var(--mono);font-size:8px;color:var(--g3);text-align:center;margin-bottom:10px">Dominican Spanish Track · Issued 2026</div>
+        <div class="cm-sigs">
+          <div><div class="cm-sig-line"></div><div class="cm-sig-name">Suhey Castillo, M.A.</div><div class="cm-sig-title">Lead Instructor · Puerto Plata, DR<br>M.A. Teaching Languages — English ↔ Spanish<br>State Educator · DR Ministry of Education</div></div>
+          <div><div class="cm-sig-line"></div><div class="cm-sig-name">Nathan Poinsette</div><div class="cm-sig-title">Director<br>Suhey Academy · Puerto Plata, DR</div></div>
+        </div>
+        <div class="cm-id">SA-2026-III-0001 · suheyacademy.com/verify</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRACK SELECTOR -->
+<section class="track-section" id="tracks">
+  <div class="track-head">
+    <div class="track-eyebrow">Choose your track</div>
+    <h2 class="track-h2">Two paths. One real credential.</h2>
+    <p class="track-p">Both tracks issue the same certificate format signed by the same M.Ed. state educator. Your track determines what is tested and what your certificate names.</p>
+  </div>
+  <div class="tracks" id="track-grid">
+    <div class="track-card gen active" onclick="selectTrack('gen',this)">
+      <div class="tc-tag"><div class="tc-dot" style="background:var(--navy)"></div>General Spanish Track</div>
+      <h3 class="tc-h3">General Spanish Proficiency</h3>
+      <p class="tc-sub">DELE and ACTFL aligned. Tests grammar, vocabulary, reading, writing, and conversational Spanish understood across all Spanish-speaking countries. Accepted by US schools, employers, and international institutions.</p>
+      <div class="tc-features">
+        <div class="tc-feat"><div class="tc-feat-dot">◆</div>Full CEFR A1 → C2 range</div>
+        <div class="tc-feat"><div class="tc-feat-dot">◆</div>Recognized by US schools &amp; employers</div>
+        <div class="tc-feat"><div class="tc-feat-dot">◆</div>ACTFL Can-Do benchmark aligned</div>
+        <div class="tc-feat"><div class="tc-feat-dot">◆</div>Grammar, reading, writing, speaking</div>
+        <div class="tc-feat"><div class="tc-feat-dot">◆</div>Signed by M.Ed. state-certified educator</div>
+      </div>
+      <div class="tc-chosen">Selected</div>
+    </div>
+    <div class="track-card dr" onclick="selectTrack('dr',this)">
+      <div class="tc-tag"><div class="tc-dot" style="background:var(--red)"></div>Dominican Spanish Track</div>
+      <h3 class="tc-h3">Dominican Spanish Specialization</h3>
+      <p class="tc-sub">The only certification program in the world specifically for Dominican Spanish. Tests real DR vocabulary, slang, cultural context, and Suhey's neuro-bio structure method. Backed by a state DR educator with a Master's in language teaching.</p>
+      <div class="tc-features">
+        <div class="tc-feat"><div class="tc-feat-dot">◆</div>CEFR aligned + DR cultural layer</div>
+        <div class="tc-feat"><div class="tc-feat-dot">◆</div>The only DR-specific certification</div>
+        <div class="tc-feat"><div class="tc-feat-dot">◆</div>DR slang, culture, and social register</div>
+        <div class="tc-feat"><div class="tc-feat-dot">◆</div>Taino linguistic heritage (Levels III+)</div>
+        <div class="tc-feat"><div class="tc-feat-dot">◆</div>Issued by Puerto Plata state educator</div>
+      </div>
+      <div class="tc-chosen">Selected</div>
+    </div>
+    <div class="track-card en" onclick="selectTrack('en',this)">
+      <div class="tc-tag"><div class="tc-dot" style="background:#0F6E56"></div>English Track — Para hispanohablantes</div>
+      <h3 class="tc-h3">English Proficiency<br>para hispanohablantes</h3>
+      <p class="tc-sub">For Spanish speakers learning English. Designed using Suhey's reverse method — the same structural approach applied from Spanish into English. Taught by a state-certified educator with a Master's in bilingual language instruction.</p>
+      <div class="tc-features">
+        <div class="tc-feat"><div class="tc-feat-dot">◆</div>CEFR A1 → C2 aligned levels</div>
+        <div class="tc-feat"><div class="tc-feat-dot">◆</div>Spanish speaker's perspective — structure-first</div>
+        <div class="tc-feat"><div class="tc-feat-dot">◆</div>US workplace and academic English</div>
+        <div class="tc-feat"><div class="tc-feat-dot">◆</div>DR-to-US transition vocabulary</div>
+        <div class="tc-feat"><div class="tc-feat-dot">◆</div>Signed by M.A. bilingual state educator</div>
+      </div>
+      <div class="tc-chosen">Selected</div>
+    </div>
+  </div>
+  <div class="dual-banner">
+    <div>
+      <div class="db-title">Dual Track Bundle — General + Dominican Spanish</div>
+      <div class="db-body">Earn both certificates at the same level. One proves you speak Spanish. The other proves you speak Dominican. Together they are the most complete Spanish language credential available from a DR educator.</div>
+    </div>
+    <div class="db-price">
+      <div class="db-was">Separate: $78</div>
+      <div class="db-now">$55</div>
+      <div class="db-save">Save $23 · Bundle</div>
+      <button class="db-btn" onclick="openModal('dual')">Get Both →</button>
+    </div>
+  </div>
+</section>
+
+<!-- LEVELS -->
+<section class="levels-section" id="levels">
+  <div class="levels-head">
+    <div class="lh-title" id="levels-title">General Spanish — Certification Levels</div>
+    <div class="lh-count">5 levels · CEFR aligned</div>
+  </div>
+  <div class="level-rows" id="level-rows"></div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="how-inner">
+    <div class="how-h2">How the certification works</div>
+    <p class="how-sub">Designed by Suhey Castillo, M.A. — from her experience as a state educator and Master's-level bilingual language specialist certified in both English→Spanish and Spanish→English instruction.</p>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-title">Choose track + level</div><div class="step-body">General or Dominican Spanish. Five levels A1 to C2. Take the free placement quiz if unsure where to start.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-title">Take the examination</div><div class="step-body">15 questions: Structure Recognition, Vocabulary in Context, Cultural Application. Levels IV–V include a live oral exam with Suhey.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-title">Review your results</div><div class="step-body">Instant scoring with section breakdown. Every incorrect answer includes Suhey's explanation of the correct rule. Retakes after 7 days.</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-title">Receive your certificate</div><div class="step-body">PDF certificate with unique verification ID. Signed by Suhey Castillo, M.Ed. — state-certified DR educator. Verifiable online forever.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CREDENTIAL WALL -->
+<section class="cred-section" id="credentials">
+  <div class="cred-h2">Why this certificate carries real weight</div>
+  <p class="cred-sub">Most language certificates are issued by apps. This one is issued by a credentialed, state-employed educator with a graduate degree in language teaching. That distinction is the difference.</p>
+  <div class="cred-grid">
+    <div class="cred-card"><div class="cc-badge" style="background:rgba(0,45,98,.1);color:var(--navy)">M.A. · Teaching Languages · EN ↔ ES</div><div class="cc-title">Master's in Teaching Languages — Both Directions</div><div class="cc-body">Suhey holds a Master of Arts in Teaching Languages with bilingual specialization — English to Spanish AND Spanish to English. Graduate-level expertise in both language directions means the certification covers English speakers learning Spanish and Spanish speakers learning English with equal rigor.</div></div>
+    <div class="cred-card"><div class="cc-badge" style="background:rgba(206,17,38,.08);color:var(--red)">DR Ministry of Education</div><div class="cc-title">State-employed educator</div><div class="cc-body">Active teacher in the Dominican public school system. Her authority to certify is not self-declared — it is backed by a state teaching license issued by the Dominican government.</div></div>
+    <div class="cred-card"><div class="cc-badge" style="background:rgba(200,150,12,.1);color:var(--gold)">A1 → C2 · CEFR</div><div class="cc-title">Internationally aligned</div><div class="cc-body">All five levels align to the Common European Framework of Reference — the standard used by universities, employers, and immigration authorities in 100+ countries. Your certificate speaks that language.</div></div>
+    <div class="cred-card"><div class="cc-badge" style="background:rgba(0,45,98,.1);color:var(--navy)">Permanent · Verifiable</div><div class="cc-title">Never expires. Always confirmable.</div><div class="cc-body">Every certificate has a unique ID and verification URL. A school, employer, or immigration officer can confirm in under 30 seconds that the certificate is real and who issued it.</div></div>
+    <div class="cred-card"><div class="cc-badge" style="background:rgba(15,110,86,.1);color:#0F6E56">Two signatures</div><div class="cc-title">Dual authority</div><div class="cc-body">Every certificate is signed by Suhey Castillo, M.Ed. as lead instructor and state educator, and Nathan Poinsette as Academy Director. Two signatories means institutional accountability, not a solo operator.</div></div>
+    <div class="cred-card"><div class="cc-badge" style="background:rgba(206,17,38,.08);color:var(--red)">First in the world</div><div class="cc-title">The only DR Spanish certification</div><div class="cc-body">No other institution issues a certification specifically for Dominican Spanish proficiency. If you speak DR Spanish and want proof — issued by a state-certified DR educator — this is the only credential that names it.</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">Suhey Academy</div>
+      <div class="footer-sub">Puerto Plata, Dominican Republic<br>Suhey Castillo, M.A. · Master of Arts in Teaching Languages — English ↔ Spanish (Bilingual)<br>State-certified educator · DR Ministry of Education<br>© 2026 Nathan Poinsette · All rights reserved · IP Owner: Nathan Poinsette<br>Three tracks: General Spanish · Dominican Spanish · English for Spanish Speakers</div>
+    </div>
+    <div class="footer-copy">Certificate format: SA-YYYY-[Level]-[####]<br>Verify: suheyacademy.com/verify<br>onlyecho822@gmail.com</div>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    <div class="modal-stripe"></div>
+    <div class="modal-eyebrow" id="m-eyebrow"></div>
+    <h2 class="modal-h2" id="m-title"></h2>
+    <div class="modal-cefr" id="m-cefr"></div>
+    <p class="modal-desc" id="m-desc"></p>
+    <div class="mi-label">What is examined</div>
+    <div id="m-includes" style="margin-bottom:16px"></div>
+    <div class="modal-price-row">
+      <div class="mp-label" id="m-price-label">Examination fee</div>
+      <div class="mp-price" id="m-price"></div>
+    </div>
+    <button class="modal-enroll" id="m-btn" onclick="closeModalDirect()">Enroll &amp; Take Examination →</button>
+    <div class="modal-note" id="m-note"></div>
+  </div>
+</div>
+
+<script>
+var CT='gen';
+var LE=[
+  {r:'I',n:'Foundational English',c:'CEFR A1 · Para hispanohablantes',s:'',p:'Free',pn:'With any session',g:'gold-btn',d:'Proves basic English communication — greetings, numbers, simple requests. Built from a Spanish speaker\'s foundation using Suhey\'s reverse structural method.',inc:['Basic English greetings and responses in context','Numbers, days, months — the daily English layer','Simple verb structures: I am, I have, I want, I need','Recognizing English cognates from Spanish — your built-in advantage','Pronunciation: 5 sounds Spanish speakers struggle with in English']},
+  {r:'II',n:'Elementary English',c:'CEFR A2 · Functional',s:'★',p:'$29',pn:'Online exam',g:'',d:'Handle everyday English interactions — store, workplace, school. Understand simple instructions and respond appropriately.',inc:['Present and simple past tense in English','300-word English vocabulary: work, family, neighborhood, health','Reading: a short English paragraph with comprehension questions','Listening: follow a short English instruction or announcement','Speaking: answer 3 simple questions about your daily life']},
+  {r:'III',n:'Conversational English',c:'CEFR B1 · Conversational',s:'★★',p:'$49',pn:'Written + oral',g:'',d:'Hold a real English conversation in a US context. Navigate work, school meetings, and community interactions with confidence.',inc:['All major English tenses including present perfect','US workplace vocabulary and professional register','Reading: a 300-word English article with inference questions','Writing: a short English paragraph about your goals (150 words)','Speaking: a 3-minute structured response to an everyday scenario']},
+  {r:'IV',n:'Advanced English',c:'CEFR B2–C1 · Advanced',s:'★★★',p:'$79',pn:'Live oral with Suhey',g:'',d:'Communicate fluently in academic and professional English. University-ready. Workplace-ready. Immigration interview-ready.',inc:['Complex English grammar — conditionals, passive voice, reported speech','Academic and professional register in English','Reading: an authentic English document with analysis questions','Writing: a 250-word English essay with argument and evidence','Live 20-minute oral examination with Suhey Castillo, M.A.']},
+  {r:'V',n:'Mastery English',c:'CEFR C1–C2 · Mastery',s:'★★★★',p:'$149',pn:'Full examination',g:'',d:'Native-equivalent English proficiency. You think in English. Academic writing, professional presentations, and nuanced conversation.',inc:['Full English grammar mastery — all registers and edge cases','Idiomatic, literary, and professional English comprehension','Reading: literary or academic excerpt — tone and purpose analysis','Writing: 400-word English essay with structured argument','Full 45-minute live examination — written and oral components in English']}
+];
+var LG=[
+  {r:'I',n:'Foundational',c:'CEFR A1',s:'',p:'Free',pn:'With any session',g:'gold-btn',d:'Basic grammar, simple verbs, core vocabulary. Prove you can introduce yourself and handle basic interactions in standard Spanish.',inc:['Articles, gender, simple present tense','Core 200-word vocabulary: greetings, numbers, family, food','Reading a short simple text — basic comprehension','Listening: follow simple instructions','Written: produce 3 simple sentences']},
+  {r:'II',n:'Elementary',c:'CEFR A2',s:'★',p:'$29',pn:'Online exam',g:'',d:'Handle routine tasks and familiar topics — shopping, directions, describing your daily life. A proven foundation.',inc:['Present tense regular and irregular verbs','Adjective agreement, articles, basic sentence structure','300-word vocabulary: daily life, travel, work, family','Reading: short paragraph with inference','Speaking: describe a scene (recorded response)']},
+  {r:'III',n:'Conversational',c:'CEFR B1',s:'★★',p:'$49',pn:'Written + oral',g:'',d:'Handle most travel situations, discuss familiar topics, produce connected text. Functional independence in Spanish-speaking environments.',inc:['Past, present, future tenses — all three','Subjunctive introduction','Reading: 300-word article with analysis questions','Writing: a 150-word opinion paragraph','Speaking: structured 3-minute oral response']},
+  {r:'IV',n:'Advanced',c:'CEFR B2–C1',s:'★★★',p:'$79',pn:'Live oral with Suhey',g:'',d:'Understand complex texts and express yourself fluently for social and professional purposes. University and workplace-ready.',inc:['All tenses, subjunctive, conditionals','Academic and professional register','Reading: authentic article with nuance analysis','Writing: 250-word argumentative essay','Live 20-minute oral examination with Suhey Castillo, M.A.']},
+  {r:'V',n:'Mastery',c:'CEFR C1–C2',s:'★★★★',p:'$149',pn:'Full examination',g:'',d:'You think in Spanish. Native-equivalent proficiency. Understand humor, implicit meaning, and all registers from formal to colloquial.',inc:['Full grammar mastery including all edge cases','Literary, academic, and idiomatic register','Reading: literary excerpt — style and tone analysis','Writing: 400-word essay with structured argument','Full 45-minute live examination — written and oral components']}
+];
+var LDR=[
+  {r:'I',n:'Despierto',c:'CEFR A1 · DR Awakened',s:'',p:'Free',pn:'With any session',g:'gold-btn',d:"You know the 65 anchor words from Suhey's method, the three core structure rules, and can introduce yourself in real Dominican Spanish — not textbook Spanish.",inc:['65 anchor words: colmado, mangú, madrugada, gozar, pana, dale...','Three structure rules: adjective flip, verb endings, packed words','¿Qué lo que? — basic DR greeting and social register','DR vs. textbook Spanish: recognizing the difference','Suhey\'s phonemic foundation — 5 sounds English speakers get wrong']},
+  {r:'II',n:'Conversador',c:'CEFR A2–B1 · Conversational',s:'★',p:'$29',pn:'Online exam',g:'',d:'Hold a real Dominican conversation — at the market, with family, asking for directions. Understand DR slang and respond with the right register.',inc:['DR vocabulary 200+: neighborhood, food, family, transport','Regatear — the social and linguistic logic of DR bargaining','Core DR expressions: dale, ta to, qué lo que, mi pana, gozar...','Reading a short DR passage with local cultural references','Recognizing Santiago vs. Puerto Plata vs. Santo Domingo register']},
+  {r:'III',n:'Pana',c:'CEFR B1–B2 · Connected',s:'★★',p:'$49',pn:'Written + oral',g:'',d:'You move through DR culture as a participant. You understand bachata lyrics, navigate a Tejada family gathering, and read the social register correctly.',inc:['DR culture in depth: bachata, campo, madrugada, gozar, alegría','Taino linguistic heritage — indigenous Hispaniola words still in use today','The Tejada family register: Santiago, Puerto Plata, Santo Domingo variations','Written: describe a DR cultural scene using correct vocabulary','Speaking: respond to a DR social scenario — market, festival, or family gathering']},
+  {r:'IV',n:'Quisqueyano',c:'CEFR B2–C1 · Island Fluent',s:'★★★',p:'$79',pn:'Live oral with Suhey',g:'',d:'Full Dominican fluency. Discuss DR history, politics, and culture. Understand humor, proverbs, and the full DR register across generations and geographies.',inc:['DR history: Trujillo, Duarte, Quisqueya, the flag, the DR Bible','Dominican proverb comprehension and appropriate social usage','Afro-Dominican and Taino vocabulary roots and modern usage','Dios te bendiga — the faith register and its cultural weight','Live 20-minute oral examination conducted entirely in DR Spanish']},
+  {r:'V',n:'Dale',c:'CEFR C1–C2 · DR Mastery',s:'★★★★',p:'$149',pn:'Full examination',g:'',d:'The highest honor. You think in Dominican Spanish. You understand DR humor, irony, generational language, and every register from Grandma T\'s campo to Santo Domingo\'s streets.',inc:['Full DR linguistic mastery — formal, colloquial, rural, and urban registers','Bachata and merengue lyric analysis — literary comprehension of DR music','The Grandma T register: campo proverbs, faith language, uplift speech','Generational shift: grandmother to college student — same family, different register','Full 45-minute oral + written examination — entirely in Dominican Spanish']}
+];
+function getLevels(){return CT==='gen'?LG:(CT==='dr'?LDR:LE)}
+function renderLevels(){
+  var lvls=getLevels();
+  document.getElementById('levels-title').textContent=(CT==='gen'?'General Spanish':(CT==='dr'?'Dominican Spanish':'English for Spanish Speakers'))+'  —  Certification Levels';
+  var colors=['#5F5E5A','#C8960C','#002D62','#0F6E56','#CE1126'];
+  document.getElementById('level-rows').innerHTML=lvls.map(function(l,i){
+    return '<div class="level-row" onclick="openModal(\''+CT+'_'+i+'\')">'+
+      '<div class="lr-badge" style="border-left:3px solid '+colors[i]+'"><div class="lr-roman" style="color:'+colors[i]+'">'+l.r+'</div><div class="lr-stars" style="color:'+colors[i]+'">'+l.s+'</div></div>'+
+      '<div class="lr-body"><div class="lr-name">'+l.n+'</div><div class="lr-cefr">'+l.c+'</div><div class="lr-desc">'+l.d.substring(0,100)+'...</div></div>'+
+      '<div class="lr-price"><div class="lr-amount">'+l.p+'</div><div class="lr-note">'+l.pn+'</div></div>'+
+      '<div class="lr-action"><button class="lr-btn '+(l.g||'')+'" onclick="event.stopPropagation();openModal(\''+CT+'_'+i+'\')">'+(i===0?'Free test':'Enroll')+'</button></div>'+
+    '</div>';
+  }).join('');
+}
+function selectTrack(t,el){
+  CT=t;
+  document.querySelectorAll('.track-card').forEach(function(c){c.classList.remove('active')});
+  el.classList.add('active');
+  renderLevels();
+  document.getElementById('levels').scrollIntoView({behavior:'smooth'});
+}
+function openModal(id){
+  var m;
+  if(id==='dual'){
+    m={ey:'Dual Track Bundle',ti:'General + Dominican Spanish',ce:'Both tracks · Same level · Two certificates',de:'Take both tracks at your chosen level. Earn two certificates — one for General Spanish proficiency, one for Dominican Spanish specialization. Together the most complete Spanish credential issued by a DR M.Ed. educator.',inc:['General Spanish examination — 15 questions','Dominican Spanish examination — 15 questions','Two signed certificates — both verified by Suhey Castillo, M.Ed.','Two permanent verification IDs — verifiable independently','Full score breakdown for each track'],p:'$55',pl:'Bundle (save $23)',no:'Individual tracks: $29 each. Bundle saves $23. Same level tested on both tracks.'};
+  } else {
+    var pts=id.split('_'),tr=pts[0],idx=parseInt(pts[1]),l=(tr==='gen'?LG:LDR)[idx];
+    m={ey:(tr==='gen'?'General Spanish':(tr==='dr'?'Dominican Spanish':'English for Spanish Speakers'))+' · Level '+l.r,ti:l.n,ce:l.c,de:l.d,inc:l.inc,p:l.p,pl:'Examination fee',no:'Results immediate · PDF certificate within 24 hours · Retake available after 7 days'};
+  }
+  document.getElementById('m-eyebrow').textContent=m.ey;
+  document.getElementById('m-title').textContent=m.ti;
+  document.getElementById('m-cefr').textContent=m.ce;
+  document.getElementById('m-desc').textContent=m.de;
+  document.getElementById('m-price').textContent=m.p;
+  document.getElementById('m-price-label').textContent=m.pl;
+  document.getElementById('m-note').textContent=m.no;
+  document.getElementById('m-includes').innerHTML=m.inc.map(function(x){return '<div class="mi-item"><div class="mi-dot">◆</div><div>'+x+'</div></div>';}).join('');
+  document.getElementById('m-btn').textContent=(m.p==='Free'?'Take Free Examination →':'Enroll & Take Examination →');
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(e){if(e&&e.target!==document.getElementById('modal'))return;closeModalDirect();}
+function closeModalDirect(){document.getElementById('modal').classList.remove('open');document.body.style.overflow='';}
+renderLevels();
+</script>
+</body>
+</html>
