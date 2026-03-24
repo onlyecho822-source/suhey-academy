@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Suhey Library — Books That Build Spanish</title>
+<meta name="description" content="eBooks, children's books, and dynamic pop-up books from Suhey Academy. Every book builds real Spanish — Dominican style.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,500;0,700;1,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d1117;
+  --gold:#ffd600;
+  --gold2:#e6c000;
+  --cream:#faf8f3;
+  --off:#f2efe8;
+  --dr-blue:#002d62;
+  --dr-red:#ce1126;
+  --text2:rgba(255,255,255,.6);
+  --text3:rgba(255,255,255,.35);
+  --card-radius:4px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--ink);
+  color:#fff;
+  font-family:'DM Sans',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;height:56px;
+  background:rgba(13,17,23,.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.nav-logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:22px;letter-spacing:.06em;
+  color:#fff;text-decoration:none;
+  display:flex;align-items:center;gap:10px;
+}
+.nav-logo span{color:var(--gold)}
+.nav-back{
+  font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.45);text-decoration:none;
+  display:flex;align-items:center;gap:6px;transition:color .15s;
+}
+.nav-back:hover{color:#fff}
+.nav-flag{width:28px;height:18px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;border:1px solid rgba(255,255,255,.2)}
+.nf1{background:#002d62}.nf2{background:#ce1126}.nf3{background:#ce1126}.nf4{background:#002d62}
+
+/* ── FLAG STRIPE ── */
+.flag-stripe{height:4px;background:linear-gradient(90deg,#002d62 33%,#fff 33%,#fff 66%,#ce1126 66%)}
+
+/* ── HERO ── */
+.lib-hero{
+  padding:64px 24px 48px;
+  text-align:center;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  position:relative;
+  overflow:hidden;
+}
+.lib-hero::before{
+  content:'BIBLIOTECA';
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:180px;letter-spacing:.1em;
+  color:rgba(255,255,255,.025);pointer-events:none;user-select:none;
+}
+.lib-hero-label{
+  font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:16px;display:block;
+}
+.lib-hero h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(48px,9vw,88px);line-height:.92;
+  color:#fff;margin-bottom:16px;
+}
+.lib-hero h1 em{color:var(--gold);font-style:normal}
+.lib-hero p{
+  font-size:15px;color:rgba(255,255,255,.5);
+  max-width:480px;margin:0 auto 32px;line-height:1.7;
+}
+.hero-stats{
+  display:flex;gap:32px;justify-content:center;flex-wrap:wrap;
+  margin-top:24px;
+}
+.hs{text-align:center}
+.hs-n{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);line-height:1}
+.hs-l{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:2px}
+
+/* ── FILTERS ── */
+.filters{
+  display:flex;gap:8px;flex-wrap:wrap;
+  padding:24px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  justify-content:center;
+}
+.filter-btn{
+  padding:8px 18px;
+  border:1px solid rgba(255,255,255,.12);
+  background:transparent;
+  color:rgba(255,255,255,.5);
+  font-family:'DM Sans',sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  cursor:pointer;transition:all .15s;
+}
+.filter-btn:hover{border-color:rgba(255,255,255,.3);color:#fff}
+.filter-btn.active{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+
+/* ── MAIN LAYOUT ── */
+.lib-main{max-width:1100px;margin:0 auto;padding:48px 24px}
+
+/* ── SECTION HEADERS ── */
+.section-head{
+  display:flex;align-items:baseline;gap:16px;
+  margin-bottom:28px;margin-top:56px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  padding-bottom:14px;
+}
+.section-head:first-child{margin-top:0}
+.sh-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:32px;color:#fff;letter-spacing:.04em;
+}
+.sh-badge{
+  font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:4px 10px;border:1px solid;
+}
+.badge-ebook{border-color:rgba(59,130,246,.4);color:rgba(147,197,253,.8)}
+.badge-kids{border-color:rgba(34,197,94,.4);color:rgba(134,239,172,.8)}
+.badge-popup{border-color:rgba(255,214,0,.4);color:var(--gold)}
+.sh-desc{font-size:13px;color:rgba(255,255,255,.35);margin-left:auto}
+
+/* ── BOOK GRID ── */
+.book-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:16px;
+}
+
+/* ── EBOOK CARD ── */
+.ebook-card{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);
+  cursor:pointer;
+  transition:border-color .2s,background .2s,transform .2s;
+  position:relative;overflow:hidden;
+}
+.ebook-card:hover{
+  border-color:rgba(59,130,246,.4);
+  background:rgba(59,130,246,.04);
+  transform:translateY(-2px);
+}
+.ec-cover{
+  aspect-ratio:3/4;
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.ec-cover-inner{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding:20px 16px;
+  position:relative;
+}
+.ec-spine{
+  position:absolute;left:0;top:0;bottom:0;width:6px;
+}
+.ec-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:22px;line-height:1;color:#fff;
+  text-align:center;margin-bottom:8px;
+  text-shadow:0 1px 8px rgba(0,0,0,.5);
+  position:relative;z-index:2;
+}
+.ec-author{
+  font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.5);text-align:center;position:relative;z-index:2;
+}
+.ec-badge{
+  position:absolute;top:10px;right:10px;z-index:5;
+  font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 8px;
+}
+.badge-free{background:rgba(34,197,94,.15);color:rgba(134,239,172,1);border:1px solid rgba(34,197,94,.3)}
+.badge-paid{background:rgba(255,214,0,.12);color:var(--gold);border:1px solid rgba(255,214,0,.3)}
+.badge-new{background:rgba(206,17,38,.15);color:#f87171;border:1px solid rgba(206,17,38,.3)}
+.ec-body{padding:12px 14px}
+.ec-desc{font-size:12px;color:rgba(255,255,255,.45);line-height:1.5;margin-bottom:10px}
+.ec-footer{display:flex;align-items:center;justify-content:space-between}
+.ec-price{font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff}
+.ec-price.free{color:rgba(134,239,172,1)}
+.ec-btn{
+  font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:6px 12px;border:none;cursor:pointer;transition:opacity .15s;
+}
+.btn-download{background:rgba(59,130,246,.15);color:rgba(147,197,253,1);border:1px solid rgba(59,130,246,.3)}
+.btn-download:hover{opacity:.8}
+.btn-buy{background:var(--gold);color:var(--ink)}
+.btn-buy:hover{opacity:.85}
+
+/* ── KIDS BOOK CARD ── */
+.kids-card{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);
+  cursor:pointer;
+  transition:border-color .2s,background .2s,transform .2s;
+  overflow:hidden;
+}
+.kids-card:hover{
+  border-color:rgba(34,197,94,.4);
+  background:rgba(34,197,94,.03);
+  transform:translateY(-2px);
+}
+.kc-cover{aspect-ratio:3/4;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.kc-age{
+  position:absolute;bottom:10px;left:10px;
+  background:rgba(0,0,0,.6);
+  font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:rgba(255,255,255,.7);padding:3px 8px;
+}
+.kc-body{padding:12px 14px}
+.kc-title{font-family:'Bebas Neue',sans-serif;font-size:18px;color:#fff;line-height:1;margin-bottom:4px}
+.kc-sub{font-size:11px;color:rgba(255,255,255,.4);margin-bottom:8px;line-height:1.4}
+.kc-footer{display:flex;align-items:center;justify-content:space-between}
+.kc-price{font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff}
+.btn-order{
+  font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:6px 12px;background:rgba(34,197,94,.12);
+  color:rgba(134,239,172,1);border:1px solid rgba(34,197,94,.3);
+  cursor:pointer;transition:opacity .15s;
+}
+.btn-order:hover{opacity:.8}
+
+/* ── POP-UP BOOK CARD — The star feature ── */
+.popup-card{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,214,0,.2);
+  cursor:pointer;
+  transition:border-color .25s,transform .25s;
+  overflow:hidden;
+  position:relative;
+}
+.popup-card:hover{
+  border-color:rgba(255,214,0,.6);
+  transform:translateY(-4px);
+}
+.popup-card:hover .popup-stage{transform:scale(1.02)}
+
+/* The 3D pop-up book stage */
+.popup-stage{
+  aspect-ratio:3/4;
+  position:relative;
+  overflow:hidden;
+  transition:transform .3s ease;
+  perspective:600px;
+}
+.popup-bg{
+  position:absolute;inset:0;
+  display:flex;align-items:flex-end;
+  justify-content:center;
+  padding-bottom:16px;
+}
+/* Page spread — the open book base */
+.book-spread{
+  position:absolute;
+  bottom:0;left:0;right:0;
+  height:55%;
+}
+.book-left{
+  position:absolute;bottom:0;left:0;width:50%;height:100%;
+  transform-origin:right center;
+  transform-style:preserve-3d;
+}
+.book-right{
+  position:absolute;bottom:0;right:0;width:50%;height:100%;
+  transform-origin:left center;
+  transform-style:preserve-3d;
+}
+/* Animated pop-up element */
+.popup-element{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%) rotateX(90deg);
+  transform-origin:bottom center;
+  transform-style:preserve-3d;
+  transition:transform .5s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;
+}
+.popup-card:hover .popup-element{
+  transform:translateX(-50%) rotateX(0deg);
+}
+/* Label on the card */
+.popup-label{
+  position:absolute;top:10px;left:10px;z-index:10;
+  font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--gold);
+  background:rgba(13,17,23,.8);padding:3px 8px;
+  border:1px solid rgba(255,214,0,.3);
+}
+.popup-body{padding:12px 14px}
+.popup-title{font-family:'Bebas Neue',sans-serif;font-size:18px;color:#fff;line-height:1;margin-bottom:4px}
+.popup-sub{font-size:11px;color:rgba(255,214,0,.6);margin-bottom:6px}
+.popup-desc{font-size:11px;color:rgba(255,255,255,.4);line-height:1.4;margin-bottom:10px}
+.popup-footer{display:flex;align-items:center;justify-content:space-between}
+.popup-price{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold)}
+.btn-popup-order{
+  font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:6px 12px;background:var(--gold);color:var(--ink);
+  border:none;cursor:pointer;transition:opacity .15s;
+}
+.btn-popup-order:hover{opacity:.85}
+
+/* ── HOW IT WORKS (pop-up explanation) ── */
+.how-popup{
+  background:rgba(255,214,0,.04);
+  border:1px solid rgba(255,214,0,.15);
+  padding:24px;
+  margin-top:20px;
+}
+.hp-title{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);margin-bottom:12px}
+.hp-steps{display:flex;flex-direction:column;gap:10px}
+.hp-step{display:flex;gap:12px;align-items:flex-start}
+.hp-num{
+  font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);
+  min-width:24px;line-height:1;
+}
+.hp-text{font-size:13px;color:rgba(255,255,255,.55);line-height:1.5}
+.hp-text strong{color:#fff;font-weight:700}
+
+/* ── BOTTOM CTA ── */
+.lib-cta{
+  text-align:center;
+  padding:64px 24px;
+  border-top:1px solid rgba(255,255,255,.06);
+  margin-top:64px;
+}
+.lib-cta h2{font-family:'Bebas Neue',sans-serif;font-size:48px;color:#fff;line-height:1;margin-bottom:12px}
+.lib-cta h2 em{color:var(--gold);font-style:normal}
+.lib-cta p{font-size:14px;color:rgba(255,255,255,.45);margin-bottom:28px}
+.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cta-primary{
+  background:var(--gold);color:var(--ink);
+  font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.08em;
+  padding:14px 32px;text-decoration:none;border:none;cursor:pointer;
+  transition:opacity .15s;display:inline-block;
+}
+.cta-primary:hover{opacity:.85}
+.cta-secondary{
+  background:transparent;color:rgba(255,255,255,.5);
+  font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.08em;
+  padding:14px 32px;border:1px solid rgba(255,255,255,.2);
+  text-decoration:none;display:inline-block;transition:color .15s,border-color .15s;
+}
+.cta-secondary:hover{color:#fff;border-color:rgba(255,255,255,.5)}
+
+/* ── MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;
+  display:flex;align-items:center;justify-content:center;padding:24px;
+  opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{
+  background:#161b22;border:1px solid rgba(255,255,255,.12);
+  max-width:480px;width:100%;padding:32px;position:relative;
+  transform:translateY(20px);transition:transform .2s;
+  max-height:90vh;overflow-y:auto;
+}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-close{
+  position:absolute;top:16px;right:16px;background:none;border:none;
+  color:rgba(255,255,255,.4);font-size:20px;cursor:pointer;
+  transition:color .15s;font-family:'DM Sans',sans-serif;
+}
+.modal-close:hover{color:#fff}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--gold);margin-bottom:20px}
+.modal-body{font-size:14px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:20px}
+.modal-includes{margin-bottom:20px}
+.mi-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:8px}
+.mi-item{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.6);margin-bottom:6px}
+.mi-check{color:var(--gold);font-size:14px}
+.modal-price{font-family:'Bebas Neue',sans-serif;font-size:36px;color:#fff;margin-bottom:16px}
+.modal-cta{
+  width:100%;padding:14px;background:var(--gold);color:var(--ink);
+  font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.08em;
+  border:none;cursor:pointer;margin-bottom:8px;transition:opacity .15s;
+}
+.modal-cta:hover{opacity:.85}
+.modal-note{font-size:11px;color:rgba(255,255,255,.25);text-align:center}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .book-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .lib-hero h1{font-size:52px}
+  .filters{padding:16px}
+  .lib-main{padding:32px 16px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-flag"><div class="nf1"></div><div class="nf2"></div><div class="nf3"></div><div class="nf4"></div></div>
+    Suhey <span>Library</span>
+  </a>
+  <a href="index.html" class="nav-back">← Back to Academy</a>
+</nav>
+<div class="flag-stripe"></div>
+
+<!-- HERO -->
+<div class="lib-hero">
+  <span class="lib-hero-label">La Biblioteca · Suhey Academy</span>
+  <h1>Every book<br>builds <em>real</em><br>Spanish.</h1>
+  <p>eBooks you download now. Children's books that arrive at your door. Pop-up books that make language come alive — for kids and adults alike.</p>
+  <div class="hero-stats">
+    <div class="hs"><div class="hs-n">12</div><div class="hs-l">eBooks</div></div>
+    <div class="hs"><div class="hs-n">8</div><div class="hs-l">Children's Books</div></div>
+    <div class="hs"><div class="hs-n">5</div><div class="hs-l">Pop-Up Books</div></div>
+    <div class="hs"><div class="hs-n">DR</div><div class="hs-l">Authentic</div></div>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filters">
+  <button class="filter-btn active" onclick="filterBooks('all', this)">All Books</button>
+  <button class="filter-btn" onclick="filterBooks('ebook', this)">📱 eBooks</button>
+  <button class="filter-btn" onclick="filterBooks('kids', this)">📚 Children's Books</button>
+  <button class="filter-btn" onclick="filterBooks('popup', this)">✨ Pop-Up Books</button>
+  <button class="filter-btn" onclick="filterBooks('free', this)">Free</button>
+  <button class="filter-btn" onclick="filterBooks('beginners', this)">Beginners</button>
+  <button class="filter-btn" onclick="filterBooks('intermediate', this)">Intermediate</button>
+</div>
+
+<!-- MAIN -->
+<div class="lib-main">
+
+  <!-- EBOOKS -->
+  <div class="section-head" data-section="ebook">
+    <span class="sh-title">eBooks</span>
+    <span class="sh-badge badge-ebook">Instant Download</span>
+    <span class="sh-desc">PDF · Read anywhere</span>
+  </div>
+  <div class="book-grid" id="ebook-grid">
+    <!-- cards injected by JS -->
+  </div>
+
+  <!-- CHILDREN'S BOOKS -->
+  <div class="section-head" data-section="kids">
+    <span class="sh-title">Children's Books</span>
+    <span class="sh-badge badge-kids">Ships to US & DR</span>
+    <span class="sh-desc">Physical · Shipped to your door</span>
+  </div>
+  <div class="book-grid" id="kids-grid">
+  </div>
+
+  <!-- POP-UP BOOKS -->
+  <div class="section-head" data-section="popup">
+    <span class="sh-title">Pop-Up Books</span>
+    <span class="sh-badge badge-popup">Interactive · 3D</span>
+    <span class="sh-desc">Hover to preview the pop-up</span>
+  </div>
+  <div class="book-grid" id="popup-grid">
+  </div>
+
+  <!-- HOW POP-UPS WORK -->
+  <div class="how-popup" data-section="popup">
+    <div class="hp-title">How the Pop-Up Books Work</div>
+    <div class="hp-steps">
+      <div class="hp-step"><div class="hp-num">1</div><div class="hp-text"><strong>You open the page</strong> — a 3D scene rises from the paper. A colmado appears. A palm tree unfolds. A bachata couple spins up from the spread.</div></div>
+      <div class="hp-step"><div class="hp-num">2</div><div class="hp-text"><strong>Each element is labeled</strong> in English and Spanish. Your child points and says the word. Suhey's method — immersion, not memorization.</div></div>
+      <div class="hp-step"><div class="hp-num">3</div><div class="hp-text"><strong>Every spread builds vocabulary</strong> — market, beach, school, family, home, DR foods. Old-school pop-up technique, new-school bilingual learning.</div></div>
+      <div class="hp-step"><div class="hp-num">4</div><div class="hp-text"><strong>QR codes on each page</strong> link to a Suhey voice note — hearing the real Dominican pronunciation of every word in the scene.</div></div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="lib-cta">
+    <h2>Want Suhey to<br>teach you <em>live?</em></h2>
+    <p>The books build the vocabulary. The sessions make it stick.</p>
+    <div class="cta-row">
+      <a href="index.html#contact-sec" class="cta-primary">Book a Session →</a>
+      <a href="index.html" class="cta-secondary">Back to Academy</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="modal-title">Book Title</div>
+    <div class="modal-sub" id="modal-sub">Subtitle</div>
+    <div class="modal-body" id="modal-body">Description</div>
+    <div class="modal-includes" id="modal-includes"></div>
+    <div class="modal-price" id="modal-price">$0</div>
+    <button class="modal-cta" id="modal-cta" onclick="orderBook()">Get This Book</button>
+    <div class="modal-note" id="modal-note">Ships within 5 business days · US & Dominican Republic</div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────
+
+var EBOOKS = [
+  {
+    id:'e1', type:'ebook', level:'beginners', free:true,
+    title:'You Already Know Spanish',
+    author:'Suhey Academy',
+    desc:'The 200 words you already carry — cognates, borrowed words, and the roots that connect English and Spanish.',
+    includes:['20-page PDF','Printable flashcards','Audio pronunciation guide'],
+    price:0, priceLabel:'FREE',
+    color1:'#1a3a6e', color2:'#0d2040', spine:'#002d62',
+    fullDesc:'This is the ebook version of the Suhey flashcard challenge. You will discover over 200 Spanish words you already know — without studying a single one. Perfect starting point before your first session.'
+  },
+  {
+    id:'e2', type:'ebook', level:'beginners', free:false,
+    title:'The Verb Ending Bible',
+    author:'Suhey Academy',
+    desc:'Master -o, -as, -a, -amos, -an. Six endings that replace six pronouns. The single most powerful shortcut in Spanish.',
+    includes:['35-page PDF','Conjugation charts','Practice sentences','Dominican examples'],
+    price:9, priceLabel:'$9',
+    color1:'#7a1a1a', color2:'#4a0d0d', spine:'#ce1126',
+    fullDesc:'Once you understand that verb endings carry who is speaking, Spanish grammar becomes a system — not a mystery. This ebook walks through every common verb ending with Dominican examples from Suhey.'
+  },
+  {
+    id:'e3', type:'ebook', level:'beginners', free:false,
+    title:'Dale — Dominican Slang Guide',
+    author:'Suhey Academy',
+    desc:'100 Dominican expressions with meanings, context, and when NOT to use them. Textbooks never teach this.',
+    includes:['50-page PDF','Audio links','Social context guide','DR regional notes'],
+    price:12, priceLabel:'$12',
+    color1:'#1a5c38', color2:'#0d3321', spine:'#1a5c38',
+    fullDesc:'Dale. Ta to. Que lo que. Vamo. This guide covers the real Dominican Spanish — the expressions that Rosetta Stone will never teach you. Includes when, where, and with whom each expression is appropriate.',
+    badge:'NEW'
+  },
+  {
+    id:'e4', type:'ebook', level:'intermediate', free:false,
+    title:'Ser vs Estar Finally Explained',
+    author:'Suhey Academy',
+    desc:'The one grammar rule that confuses every English speaker — explained once, clearly, with real examples.',
+    includes:['28-page PDF','Decision chart','100 practice scenarios','Answer key'],
+    price:9, priceLabel:'$9',
+    color1:'#533ab7', color2:'#2a1f70', spine:'#534ab7',
+    fullDesc:'Every Spanish student hits the ser vs estar wall. This ebook uses one simple question — is it permanent or right now? — to eliminate the confusion permanently. Includes 100 real-world practice scenarios.'
+  },
+  {
+    id:'e5', type:'ebook', level:'intermediate', free:false,
+    title:'DR Food & Culture Vocabulary',
+    author:'Suhey Academy',
+    desc:'Mangú, motoconcho, colmado, bachata — the vocabulary of Dominican life that no app teaches.',
+    includes:['40-page PDF','Full-color food guide','Cultural context','Recipe vocabulary'],
+    price:14, priceLabel:'$14',
+    color1:'#854f0b', color2:'#4a2c04', spine:'#ba7517',
+    fullDesc:'Language lives in culture. This ebook teaches vocabulary through the lens of Dominican daily life — food, transport, music, family, faith. After reading this, you can navigate a DR market, understand a bachata lyric, and talk about food like a local.',
+    badge:'BEST'
+  },
+  {
+    id:'e6', type:'ebook', level:'beginners', free:true,
+    title:'5 Phrases for Today',
+    author:'Suhey Academy',
+    desc:'Five Dominican phrases you can use in a real conversation today. With pronunciation guide and context.',
+    includes:['8-page PDF','Audio QR codes','Cultural note'],
+    price:0, priceLabel:'FREE',
+    color1:'#0f6e56', color2:'#073d30', spine:'#0f6e56',
+    fullDesc:'The fastest way to feel confident in Spanish is to have five phrases you can actually say right now. This free mini-ebook gives you exactly that — five Dominican expressions, how to say them, when to say them, and what they really mean.'
+  }
+];
+
+var KIDS_BOOKS = [
+  {
+    id:'k1', type:'kids', level:'beginners',
+    title:'Mi Colmado / My Corner Store',
+    sub:'Ages 3-7 · Bilingual',
+    desc:'A little girl visits her neighborhood colmado. Every item has its Spanish and English name — the Dominican way to learn.',
+    includes:['32-page hardcover','Bilingual text','Full-color illustrations','Dominican setting'],
+    price:18, priceLabel:'$18',
+    color1:'#1a5c38', color2:'#0a3321',
+    age:'Ages 3-7',
+    fullDesc:'A classic bilingual picture book set in a Dominican neighborhood colmado — the corner store that is the heart of every community. Children learn food, colors, and numbers naturally through the story.'
+  },
+  {
+    id:'k2', type:'kids', level:'beginners',
+    title:'Gozar — Joy in Motion',
+    sub:'Ages 2-5 · Board Book',
+    desc:'A baby\'s first Dominican words — gozar, bailar, sonreir. Board book with bold Dominican colors.',
+    includes:['16-page board book','Thick pages for little hands','Bold Dominican illustrations'],
+    price:14, priceLabel:'$14',
+    color1:'#7a1a1a', color2:'#4a0d0d',
+    age:'Ages 2-5',
+    badge:'NEW'
+  },
+  {
+    id:'k3', type:'kids', level:'intermediate',
+    title:'Bachata Night',
+    sub:'Ages 6-10 · Story',
+    desc:'A family gets ready for Saturday bachata night. Music, family vocabulary, and Dominican culture in one story.',
+    includes:['40-page illustrated story','Music vocabulary','Family tree activity','QR code to real bachata'],
+    price:20, priceLabel:'$20',
+    color1:'#533ab7', color2:'#2a1f70',
+    age:'Ages 6-10'
+  },
+  {
+    id:'k4', type:'kids', level:'beginners',
+    title:'La Madrugada / Before Dawn',
+    sub:'Ages 5-9 · Bilingual',
+    desc:'A child and grandfather fish before sunrise. Teaches time, nature vocabulary, and Dominican family bonds.',
+    includes:['36-page hardcover','Bilingual','Watercolor illustrations','Glossary'],
+    price:18, priceLabel:'$18',
+    color1:'#0d2040', color2:'#060f20',
+    age:'Ages 5-9'
+  }
+];
+
+var POPUP_BOOKS = [
+  {
+    id:'p1', type:'popup', level:'beginners',
+    title:'La Isla Pop-Up',
+    sub:'Ages 4-10 · English & Spanish',
+    desc:'Seven scenes from Dominican island life — beach, market, school, home, colmado, carnival, and church. Each scene pops up in full 3D with bilingual labels.',
+    includes:['14 spreads','7 pop-up scenes','Bilingual labels','QR pronunciation codes','DR artist illustrations'],
+    price:34, priceLabel:'$34',
+    popupShape:'palm',
+    color1:'#1a3a6e', color2:'#0a1f45',
+    accent:'#ffd600',
+    fullDesc:'Seven scenes from Dominican island life rise from the pages in full 3D. Each element — the palm tree, the waves, the market stall — is labeled in English and Spanish. QR codes link to Suhey reading each word aloud.',
+    badge:'FEATURED'
+  },
+  {
+    id:'p2', type:'popup', level:'beginners',
+    title:'Mi Familia Pop-Up',
+    sub:'Ages 3-8 · Family Vocabulary',
+    desc:'Every family member rises from the page. Abuela in her rocking chair. Papá at the table. The family dog in the yard. 12 vocabulary words, zero memorization.',
+    includes:['10 spreads','Family pop-ups','Activity pages','Name-your-family stickers'],
+    price:28, priceLabel:'$28',
+    popupShape:'house',
+    color1:'#1a5c38', color2:'#0a3321',
+    accent:'#ffd600',
+    fullDesc:'The family vocabulary book designed the way Suhey teaches — through context, not lists. Each family member pops up in a real Dominican home scene. Children learn abuela, abuelo, mamá, papá, tío, tía naturally.',
+    badge:'NEW'
+  },
+  {
+    id:'p3', type:'popup', level:'intermediate',
+    title:'Bachata Pop-Up Stage',
+    sub:'Ages 8+ · Music & Dance',
+    desc:'A full bachata stage unfolds from the page — musicians, dancers, lights. Each instrument and dance move labeled in both languages.',
+    includes:['8 spreads','Full stage pop-up','Instrument labels','Dance step diagrams','QR to music'],
+    price:38, priceLabel:'$38',
+    popupShape:'star',
+    color1:'#7a1a1a', color2:'#4a0d0d',
+    accent:'#ffd600',
+    fullDesc:'The centerpiece spread opens to reveal a full Dominican bachata stage — güira, bongos, bass guitar, lead guitar, and two dancers — all in 3D. Every element is labeled. A QR code plays real bachata.'
+  },
+  {
+    id:'p4', type:'popup', level:'beginners',
+    title:'El Mercado Pop-Up',
+    sub:'Ages 5-10 · Food Vocabulary',
+    desc:'A Dominican market scene unfolds with vendors, produce, and customers. 30 food vocabulary words rise from the page.',
+    includes:['12 spreads','Market pop-up','30 food labels','Counting activity','Bilingual glossary'],
+    price:32, priceLabel:'$32',
+    popupShape:'arch',
+    color1:'#854f0b', color2:'#4a2c04',
+    accent:'#ffd600',
+    fullDesc:'The Dominican market comes alive in 3D. Fruit stalls, vegetable vendors, a juice counter — all pop up with their bilingual labels. Children learn 30 food vocabulary words while exploring the scene.'
+  },
+  {
+    id:'p5', type:'popup', level:'beginners',
+    title:'ABC Dominicano Pop-Up',
+    sub:'Ages 2-6 · Alphabet',
+    desc:'Each letter of the alphabet reveals a Dominican word and a 3D scene. A is for Azúcar — a sugar cane stalk rises. B is for Bachata — a dancing couple spins up.',
+    includes:['26 letter spreads','3D pop-up per letter','Dominican word + image','Parent pronunciation guide'],
+    price:36, priceLabel:'$36',
+    popupShape:'letter',
+    color1:'#533ab7', color2:'#2a1f70',
+    accent:'#ffd600',
+    fullDesc:'The alphabet board book reimagined as a 3D pop-up experience. Every letter reveals a Dominican word and a miniature scene that rises from the page. Designed with Suhey\'s phonemic-first method — sound before spelling.'
+  }
+];
+
+// ── RENDER ────────────────────────────────────────────────────────────
+
+function coverGradient(c1, c2){
+  return 'linear-gradient(160deg,' + c1 + ' 0%,' + c2 + ' 100%)';
+}
+
+function renderEbooks(){
+  var grid = document.getElementById('ebook-grid');
+  grid.innerHTML = '';
+  EBOOKS.forEach(function(b){
+    var div = document.createElement('div');
+    div.className = 'ebook-card';
+    div.setAttribute('data-type','ebook');
+    div.setAttribute('data-level', b.level);
+    div.setAttribute('data-free', b.free ? 'true' : 'false');
+    div.innerHTML =
+      '<div class="ec-cover" style="background:' + coverGradient(b.color1, b.color2) + '">' +
+        '<div class="ec-spine" style="background:' + b.spine + '"></div>' +
+        (b.badge ? '<div class="ec-badge badge-' + (b.badge==='NEW'?'new':'paid') + '">' + b.badge + '</div>' : '') +
+        (b.free ? '<div class="ec-badge badge-free">FREE</div>' : '') +
+        '<div class="ec-cover-inner">' +
+          '<div class="ec-title">' + b.title + '</div>' +
+          '<div class="ec-author">' + b.author + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="ec-body">' +
+        '<div class="ec-desc">' + b.desc + '</div>' +
+        '<div class="ec-footer">' +
+          '<div class="ec-price' + (b.free?' free':'') + '">' + b.priceLabel + '</div>' +
+          '<button class="ec-btn ' + (b.free?'btn-download':'btn-buy') + '" onclick="openModal(\'' + b.id + '\')">' + (b.free?'Download':'Get It') + '</button>' +
+        '</div>' +
+      '</div>';
+    grid.appendChild(div);
+  });
+}
+
+function renderKids(){
+  var grid = document.getElementById('kids-grid');
+  grid.innerHTML = '';
+  KIDS_BOOKS.forEach(function(b){
+    var div = document.createElement('div');
+    div.className = 'kids-card';
+    div.setAttribute('data-type','kids');
+    div.setAttribute('data-level', b.level);
+    div.innerHTML =
+      '<div class="kc-cover" style="background:' + coverGradient(b.color1, b.color2) + '">' +
+        (b.badge ? '<div class="ec-badge badge-new" style="top:10px;right:10px;position:absolute;z-index:5">' + b.badge + '</div>' : '') +
+        '<div style="padding:20px;text-align:center;width:100%">' +
+          '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:60px;line-height:1;color:rgba(255,255,255,.15)">📖</div>' +
+          '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:18px;color:#fff;margin-top:8px;line-height:1.1">' + b.title + '</div>' +
+        '</div>' +
+        '<div class="kc-age">' + b.age + '</div>' +
+      '</div>' +
+      '<div class="kc-body">' +
+        '<div class="kc-title">' + b.title + '</div>' +
+        '<div class="kc-sub">' + b.sub + '</div>' +
+        '<div class="kc-sub" style="color:rgba(255,255,255,.38);font-size:11px;line-height:1.4;margin-bottom:10px">' + b.desc + '</div>' +
+        '<div class="kc-footer">' +
+          '<div class="kc-price">' + b.priceLabel + '</div>' +
+          '<button class="btn-order" onclick="openModal(\'' + b.id + '\')">Order</button>' +
+        '</div>' +
+      '</div>';
+    grid.appendChild(div);
+  });
+}
+
+function renderPopups(){
+  var grid = document.getElementById('popup-grid');
+  grid.innerHTML = '';
+  POPUP_BOOKS.forEach(function(b){
+    var div = document.createElement('div');
+    div.className = 'popup-card';
+    div.setAttribute('data-type','popup');
+    div.setAttribute('data-level', b.level);
+
+    // Build the pop-up stage visual based on shape
+    var popupHTML = buildPopupStage(b);
+
+    div.innerHTML =
+      '<div class="popup-stage" style="background:' + coverGradient(b.color1, b.color2) + '">' +
+        '<div class="popup-label">✨ Hover to preview</div>' +
+        (b.badge ? '<div style="position:absolute;top:10px;right:10px;z-index:10;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;background:rgba(255,214,0,.15);color:var(--gold);border:1px solid rgba(255,214,0,.3)">' + b.badge + '</div>' : '') +
+        popupHTML +
+      '</div>' +
+      '<div class="popup-body">' +
+        '<div class="popup-title">' + b.title + '</div>' +
+        '<div class="popup-sub">' + b.sub + '</div>' +
+        '<div class="popup-desc">' + b.desc.substring(0, 80) + '...</div>' +
+        '<div class="popup-footer">' +
+          '<div class="popup-price">' + b.priceLabel + '</div>' +
+          '<button class="btn-popup-order" onclick="openModal(\'' + b.id + '\')">Order</button>' +
+        '</div>' +
+      '</div>';
+    grid.appendChild(div);
+  });
+}
+
+function buildPopupStage(b){
+  var shapes = {
+    palm:
+      '<div style="position:absolute;bottom:30%;left:50%;transform:translateX(-50%);width:100%;display:flex;justify-content:center;align-items:flex-end;gap:24px">' +
+        // Left page
+        '<div style="width:45%;height:2px;background:rgba(255,255,255,.15);position:absolute;bottom:0;left:2%"></div>' +
+        // Right page
+        '<div style="width:45%;height:2px;background:rgba(255,255,255,.15);position:absolute;bottom:0;right:2%"></div>' +
+        // Pop-up palm
+        '<div class="popup-element" style="bottom:30%;width:60px;height:100px">' +
+          '<svg viewBox="0 0 60 100" style="width:100%;height:100%">' +
+            '<rect x="27" y="40" width="6" height="60" fill="#5d4037" rx="2"/>' +
+            '<ellipse cx="30" cy="36" rx="22" ry="12" fill="#2e7d32" transform="rotate(-20 30 36)"/>' +
+            '<ellipse cx="30" cy="30" rx="18" ry="10" fill="#388e3c" transform="rotate(10 30 30)"/>' +
+            '<ellipse cx="30" cy="24" rx="14" ry="8" fill="#43a047" transform="rotate(-5 30 24)"/>' +
+            '<ellipse cx="30" cy="18" rx="10" ry="6" fill="#4caf50"/>' +
+          '</svg>' +
+        '</div>' +
+        '<div style="font-family:\'DM Serif Display\',serif;font-size:11px;color:rgba(255,214,0,.7);position:absolute;bottom:8px;left:50%;transform:translateX(-50%);white-space:nowrap;font-style:italic">La Palma · The Palm</div>' +
+      '</div>',
+
+    house:
+      '<div style="position:absolute;bottom:25%;left:50%;transform:translateX(-50%);width:90%;display:flex;justify-content:center">' +
+        '<div style="width:90%;height:1.5px;background:rgba(255,255,255,.12);position:absolute;bottom:0;left:5%"></div>' +
+        '<div class="popup-element" style="bottom:25%">' +
+          '<svg viewBox="0 0 80 70" style="width:80px;height:70px">' +
+            '<polygon points="40,5 75,32 5,32" fill="#c62828"/>' +
+            '<rect x="15" y="32" width="50" height="35" fill="#ef9a9a"/>' +
+            '<rect x="33" y="45" width="14" height="22" fill="#8d6e63"/>' +
+            '<rect x="18" y="36" width="12" height="10" fill="#b3e5fc"/>' +
+            '<rect x="50" y="36" width="12" height="10" fill="#b3e5fc"/>' +
+          '</svg>' +
+        '</div>' +
+        '<div style="font-family:\'DM Serif Display\',serif;font-size:11px;color:rgba(255,214,0,.7);position:absolute;bottom:8px;left:50%;transform:translateX(-50%);white-space:nowrap;font-style:italic">La Casa · The House</div>' +
+      '</div>',
+
+    star:
+      '<div style="position:absolute;bottom:28%;left:50%;transform:translateX(-50%);width:90%">' +
+        '<div style="width:90%;height:1.5px;background:rgba(255,255,255,.12);position:absolute;bottom:0;left:5%"></div>' +
+        '<div class="popup-element" style="bottom:28%">' +
+          '<svg viewBox="0 0 80 80" style="width:80px;height:80px">' +
+            '<polygon points="40,5 48,30 75,30 53,47 61,72 40,56 19,72 27,47 5,30 32,30" fill="#ffd600"/>' +
+            '<circle cx="40" cy="40" r="12" fill="#ff6f00"/>' +
+            '<text x="40" y="44" text-anchor="middle" fill="white" font-size="8" font-weight="bold">♪</text>' +
+          '</svg>' +
+        '</div>' +
+        '<div style="font-family:\'DM Serif Display\',serif;font-size:11px;color:rgba(255,214,0,.7);position:absolute;bottom:8px;left:50%;transform:translateX(-50%);white-space:nowrap;font-style:italic">La Bachata · The Dance</div>' +
+      '</div>',
+
+    arch:
+      '<div style="position:absolute;bottom:25%;left:50%;transform:translateX(-50%);width:90%">' +
+        '<div style="width:90%;height:1.5px;background:rgba(255,255,255,.12);position:absolute;bottom:0;left:5%"></div>' +
+        '<div class="popup-element" style="bottom:25%">' +
+          '<svg viewBox="0 0 90 80" style="width:90px;height:80px">' +
+            '<rect x="5" y="40" width="80" height="40" fill="#bf8642" rx="2"/>' +
+            '<path d="M5 40 Q45 5 85 40" fill="#d4a054" stroke="#bf8642" stroke-width="2"/>' +
+            '<circle cx="25" cy="55" r="8" fill="#ff7043"/>' +
+            '<circle cx="45" cy="50" r="10" fill="#66bb6a"/>' +
+            '<circle cx="65" cy="55" r="8" fill="#ffa726"/>' +
+          '</svg>' +
+        '</div>' +
+        '<div style="font-family:\'DM Serif Display\',serif;font-size:11px;color:rgba(255,214,0,.7);position:absolute;bottom:8px;left:50%;transform:translateX(-50%);white-space:nowrap;font-style:italic">El Mercado · The Market</div>' +
+      '</div>',
+
+    letter:
+      '<div style="position:absolute;bottom:28%;left:50%;transform:translateX(-50%);width:90%">' +
+        '<div style="width:90%;height:1.5px;background:rgba(255,255,255,.12);position:absolute;bottom:0;left:5%"></div>' +
+        '<div class="popup-element" style="bottom:28%">' +
+          '<svg viewBox="0 0 80 70" style="width:80px;height:70px">' +
+            '<text x="40" y="56" text-anchor="middle" font-family="Georgia,serif" font-size="64" font-weight="bold" fill="#ffd600">A</text>' +
+            '<text x="40" y="68" text-anchor="middle" font-family="Georgia,serif" font-size="9" fill="rgba(255,255,255,0.7)">Azúcar · Sugar</text>' +
+          '</svg>' +
+        '</div>' +
+      '</div>'
+  };
+  return shapes[b.popupShape] || shapes['palm'];
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────
+var currentBook = null;
+var ALL_BOOKS = EBOOKS.concat(KIDS_BOOKS).concat(POPUP_BOOKS);
+
+function openModal(id){
+  var book = ALL_BOOKS.find(function(b){ return b.id === id; });
+  if (!book) return;
+  currentBook = book;
+
+  document.getElementById('modal-title').textContent = book.title;
+  document.getElementById('modal-sub').textContent = book.sub || book.author || '';
+  document.getElementById('modal-body').textContent = book.fullDesc || book.desc;
+  document.getElementById('modal-price').textContent = book.priceLabel;
+
+  var inc = document.getElementById('modal-includes');
+  if (book.includes && book.includes.length) {
+    inc.innerHTML = '<div class="mi-label">What\'s included</div>' +
+      book.includes.map(function(i){ return '<div class="mi-item"><span class="mi-check">◆</span>' + i + '</div>'; }).join('');
+  } else { inc.innerHTML = ''; }
+
+  var cta = document.getElementById('modal-cta');
+  var note = document.getElementById('modal-note');
+  if (book.type === 'ebook') {
+    cta.textContent = book.free ? 'Download Free PDF' : 'Buy & Download — ' + book.priceLabel;
+    note.textContent = 'Instant PDF download · No account needed';
+  } else {
+    cta.textContent = 'Order via WhatsApp — ' + book.priceLabel;
+    note.textContent = 'Ships within 5-7 business days · US & Dominican Republic';
+  }
+
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e){
+  if (e && e.target !== document.getElementById('modal')) return;
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function orderBook(){
+  if (!currentBook) return;
+  var msg = 'Hola Suhey! I would like to order: ' + currentBook.title + ' (' + currentBook.priceLabel + ')';
+  var wa = 'https://wa.me/YOUR_WHATSAPP?text=' + encodeURIComponent(msg);
+  window.open(wa, '_blank');
+}
+
+// ── FILTERS ───────────────────────────────────────────────────────────
+function filterBooks(type, btn){
+  document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+
+  var allCards = document.querySelectorAll('.ebook-card, .kids-card, .popup-card');
+  var sections = document.querySelectorAll('[data-section]');
+
+  allCards.forEach(function(card){
+    var show = false;
+    if (type === 'all') { show = true; }
+    else if (type === 'ebook') { show = card.classList.contains('ebook-card'); }
+    else if (type === 'kids') { show = card.classList.contains('kids-card'); }
+    else if (type === 'popup') { show = card.classList.contains('popup-card'); }
+    else if (type === 'free') { show = card.getAttribute('data-free') === 'true'; }
+    else if (type === 'beginners') { show = card.getAttribute('data-level') === 'beginners'; }
+    else if (type === 'intermediate') { show = card.getAttribute('data-level') === 'intermediate'; }
+    card.style.display = show ? '' : 'none';
+  });
+
+  sections.forEach(function(s){
+    var sec = s.getAttribute('data-section');
+    if (type === 'all' || type === 'free' || type === 'beginners' || type === 'intermediate') {
+      s.style.display = '';
+    } else {
+      s.style.display = (type === sec) ? '' : 'none';
+    }
+  });
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────
+renderEbooks();
+renderKids();
+renderPopups();
+</script>
+</body>
+</html>
