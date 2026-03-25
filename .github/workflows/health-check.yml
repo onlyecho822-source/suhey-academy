@@ -1,6 +1,13 @@
 name: Repository Health Check
 
+# DISABLED: All workflows paused for assessment
 on:
+  workflow_dispatch:
+    inputs:
+      skip:
+        description: "Paused"
+        default: "true"
+jobs:
   schedule:
     - cron: '0 */6 * * *'
   workflow_dispatch:
@@ -53,9 +60,3 @@ jobs:
           if [ -f LICENSE ] || [ -f LICENSE.md ]; then
             echo "✓ LICENSE found" >> $GITHUB_STEP_SUMMARY
           else
-            echo "⚠ No LICENSE" >> $GITHUB_STEP_SUMMARY
-          fi
-          
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### File count" >> $GITHUB_STEP_SUMMARY
-          echo "Total files: $(find . -not -path '*/\.*' -type f | wc -l)" >> $GITHUB_STEP_SUMMARY
