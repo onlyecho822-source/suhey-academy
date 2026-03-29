@@ -1,0 +1,47 @@
+# .echo/config.yaml
+# Echo Nervous System — Node Identity
+# Canonical: echo-core/spec/ECHO_NERVOUS_SYSTEM_SPEC.md
+
+node:
+  id: "suhey-academy"
+  type: "product"
+  status: "active"
+  version: "1.0.0"
+  schema_version: "1.0"
+
+capabilities:
+  - spanish_instruction
+  - curriculum_generation
+  - podcast_production
+  - language_translation
+
+ai_preferences:
+  primary: "claude"
+  secondary: "deepseek"
+  batch: "deepseek"
+  vision: "gpt4o"
+
+subjects:
+  subscribe:
+    - "echo.suhey-academy.*.*.task_offer"
+    - "echo.coordinator.all.sync_request"
+    - "echo.coordinator.all.heartbeat"
+  publish:
+    - "echo.suhey-academy.*.*.task_result"
+    - "echo.suhey-academy.*.*.error"
+    - "echo.EMERGING.any.discovery.surface"
+
+health_endpoint: "/echo/health"
+metrics_endpoint: "/echo/metrics"
+
+domain: "education"
+mission_alignment: "learning_is_fun"
+activation_condition: "always"
+
+# Nervous system binding
+nervous_system:
+  spine: "echo-coordinator"
+  bus: "nats-jetstream"
+  truth_store: "postgres"
+  artifact_store: "github"
+  lock_service: "redis"
