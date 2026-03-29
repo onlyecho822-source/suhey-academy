@@ -1,13 +1,6 @@
 name: Repository Health Check
 
-# DISABLED: All workflows paused for assessment
 on:
-  workflow_dispatch:
-    inputs:
-      skip:
-        description: "Paused"
-        default: "true"
-jobs:
   schedule:
     - cron: '0 */6 * * *'
   workflow_dispatch:
@@ -20,43 +13,40 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Check repository health
         run: |
-          echo "## Repository Health Check" >> $GITHUB_STEP_SUMMARY
+          echo "## Repository Health Check — $(date -u)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
-          # Check for package.json
+
+          # Package manager detection
           if [ -f package.json ]; then
             echo "✓ package.json found" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "⚠ No package.json" >> $GITHUB_STEP_SUMMARY
           fi
-          
-          # Check for pnpm-lock.yaml or package-lock.json
           if [ -f pnpm-lock.yaml ]; then
-            echo "✓ pnpm-lock.yaml found" >> $GITHUB_STEP_SUMMARY
-          elif [ -f package-lock.json ]; then
-            echo "✓ package-lock.json found" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "⚠ No lockfile detected" >> $GITHUB_STEP_SUMMARY
+            echo "✓ pnpm lockfile found" >> $GITHUB_STEP_SUMMARY
           fi
-          
-          # Check for .gitignore
-          if [ -f .gitignore ]; then
-            echo "✓ .gitignore present" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "⚠ No .gitignore" >> $GITHUB_STEP_SUMMARY
+
+          # Core files
+          for f in README.md LICENSE .gitignore; do
+            if [ -f "$f" ]; then
+              echo "✓ $f present" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "⚠ $f missing" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+
+          # Placeholder check (suhey-specific)
+          if [ -f index.html ]; then
+            count=$(grep -c 'YOUR_' index.html 2>/dev/null || echo 0)
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Unfilled placeholders in index.html: $count" >> $GITHUB_STEP_SUMMARY
+            if [ "$count" -gt "0" ]; then
+              echo "⚠ Site not ready — $count placeholder(s) remain" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "✓ All placeholders filled" >> $GITHUB_STEP_SUMMARY
+            fi
           fi
-          
-          # Check for README
-          if [ -f README.md ]; then
-            echo "✓ README.md present" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "⚠ No README.md" >> $GITHUB_STEP_SUMMARY
-          fi
-          
-          # Check for LICENSE
-          if [ -f LICENSE ] || [ -f LICENSE.md ]; then
-            echo "✓ LICENSE found" >> $GITHUB_STEP_SUMMARY
-          else
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Health check complete." >> $GITHUB_STEP_SUMMARY
