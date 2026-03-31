@@ -1,26 +1,39 @@
 name: Site Verify
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Verification reason"
+        required: false
+        default: "Pre-deployment check"
 
 jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Verify site files
         run: |
-          echo "=== Suhey Academy File Check ==="
+          echo "## Suhey Academy File Check" >> $GITHUB_STEP_SUMMARY
           for f in index.html netlify.toml; do
             if [ -f "$f" ]; then
               size=$(wc -c < "$f")
-              echo "OK: $f ($size bytes)"
+              echo "✓ $f ($size bytes)" >> $GITHUB_STEP_SUMMARY
             else
-              echo "MISSING: $f"
+              echo "✗ MISSING: $f" >> $GITHUB_STEP_SUMMARY
             fi
           done
-          echo "=== Placeholder Check ==="
+
+      - name: Placeholder check
+        run: |
           count=$(grep -c 'YOUR_' index.html 2>/dev/null || echo 0)
-          echo "Unfilled placeholders: $count"
-          echo "=== Done ==="
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Unfilled placeholders: $count" >> $GITHUB_STEP_SUMMARY
+          if [ "$count" -gt "0" ]; then
+            echo "⚠ $count placeholder(s) remain — not ready to deploy" >> $GITHUB_STEP_SUMMARY
+            grep -n 'YOUR_' index.html | head -10 >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ All placeholders filled — READY TO DEPLOY" >> $GITHUB_STEP_SUMMARY
+          fi
