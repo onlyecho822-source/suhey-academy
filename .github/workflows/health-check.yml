@@ -19,15 +19,6 @@ jobs:
           echo "## Repository Health Check — $(date -u)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          # Package manager detection
-          if [ -f package.json ]; then
-            echo "✓ package.json found" >> $GITHUB_STEP_SUMMARY
-          fi
-          if [ -f pnpm-lock.yaml ]; then
-            echo "✓ pnpm lockfile found" >> $GITHUB_STEP_SUMMARY
-          fi
-
-          # Core files
           for f in README.md LICENSE .gitignore; do
             if [ -f "$f" ]; then
               echo "✓ $f present" >> $GITHUB_STEP_SUMMARY
@@ -36,15 +27,21 @@ jobs:
             fi
           done
 
-          # Placeholder check (suhey-specific)
+          if [ -f package.json ]; then
+            echo "✓ package.json found" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ -f pnpm-lock.yaml ]; then
+            echo "✓ pnpm lockfile found" >> $GITHUB_STEP_SUMMARY
+          fi
+
           if [ -f index.html ]; then
             count=$(grep -c 'YOUR_' index.html 2>/dev/null || echo 0)
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "Unfilled placeholders in index.html: $count" >> $GITHUB_STEP_SUMMARY
-            if [ "$count" -gt "0" ]; then
-              echo "⚠ Site not ready — $count placeholder(s) remain" >> $GITHUB_STEP_SUMMARY
+            echo "Unfilled placeholders: $count" >> $GITHUB_STEP_SUMMARY
+            if [ "$count" -eq "0" ]; then
+              echo "✅ Site ready to deploy" >> $GITHUB_STEP_SUMMARY
             else
-              echo "✓ All placeholders filled" >> $GITHUB_STEP_SUMMARY
+              echo "⚠ $count placeholder(s) remain" >> $GITHUB_STEP_SUMMARY
             fi
           fi
 
