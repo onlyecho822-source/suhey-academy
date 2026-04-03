@@ -1,37 +1,70 @@
 # Suhey Academy — Ecosystem Connection
 
-**Role**: Education product · DR/Caribbean market entry · Revenue stream 2
+**Protocol**: ECS v1.1-hardened | **Ecosystem**: Echo Universe (45 repos)
 
 ---
 
-## Position
+## Role in the Ecosystem
 
-Suhey Academy is the second revenue product to launch (parallel to Art of Proof). It serves a completely different market — language learners rather than legal/evidence users — which means zero cannibalization and full additive revenue.
-
----
-
-## Connections
-
-| Connects To | How |
-|-------------|-----|
-| `echo-echolibrary-site` | Academy listed in EchoLibrary product catalog |
-| `art-of-proof` | Shares Stripe payment infrastructure (future) |
-| `echo-knowa` | Language access is a civic empowerment tool — mission alignment |
-| Puerto Plata/DR operations | Suhey is based in Puerto Plata — local market anchor |
+Education and language learning product. Demonstrates Echo Universe's creator-platform capability. Built for Suhey Castillo — independent operator on Echo infrastructure.
 
 ---
 
-## Independence
+## What This Repo Receives
 
-Suhey Academy is fully independent of the technical deployment stack. It runs on static HTML and third-party services. It can go live without Railway, without MySQL, without OpenAI. This makes it the fastest path to a second live product.
+- art-of-proof Stripe infrastructure (reused pattern)
+
+---
+
+## What This Repo Provides
+
+- Dominican Spanish learning subscriptions
+- Podcast content
+- Community education events
+
+---
+
+## Shared Protocols
+
+ECS v1.1-hardened
+
+---
+
+## Downstream (this feeds into)
+
+echo-echolibrary-site (unified product catalog)
+
+---
+
+## Upstream (feeds into this)
+
+art-of-proof (payment infrastructure pattern)
+
+---
+
+## Ecosystem Map
+
+```
+echo-core (canonical authority)
+    │
+    ├── ECS Protocol (reasoning standard)
+    │       │
+    │       └── All structured outputs across 45 repos
+    │
+    ├── Art of Proof (commercial hub + white paper host)
+    │
+    └── This repo: Suhey Academy
+```
 
 
 ---
 
-## Ecosystem Reference
+## Ecosystem Connection
 
-**Ecosystem White Paper**: `art-of-proof/docs/WHITE_PAPER_v3.md`  
-**Protocol Authority**: `echo-core` — ECS v1.1-hardened  
-**Operator**: Nathan Poinsette (∇θ) · onlyecho822-source  
+**Part of**: Echo Universe (45-repository sovereign AI and evidence ecosystem)  
+**Operator**: Nathan Poinsette (∇θ) | onlyecho822-source  
+**Ecosystem White Paper**: [`art-of-proof/docs/WHITE_PAPER_v3.md`](https://github.com/onlyecho822-source/art-of-proof/blob/main/docs/WHITE_PAPER_v3.md)  
+**Governance Protocol**: ECS v1.1-hardened (`echo-core`)  
+**Canonical Authority**: [`echo-core`](https://github.com/onlyecho822-source/echo-core)
 
 *∇θ — chain sealed, truth preserved.*
