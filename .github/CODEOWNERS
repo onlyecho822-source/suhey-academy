@@ -1,0 +1,5 @@
+# CODEOWNERS
+# All changes require review from the operator
+# Echo Universe · ECS v1.1-hardened · ∇θ
+
+* @onlyecho822-source
