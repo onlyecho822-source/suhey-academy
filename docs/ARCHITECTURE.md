@@ -1,31 +1,56 @@
 # Suhey Academy — Architecture
 
-**Stack**: Static site (HTML/CSS/JS) + Stripe payment links + EmailJS + WhatsApp integration
+**Protocol**: ECS v1.1-hardened | **Authority**: echo-core
 
 ---
 
-## Why This Stack
+## Stack
 
-Static site means: no server to maintain, no backend to deploy, no database to manage. The entire payment and communication flow runs through third-party services that Suhey already controls.
-
-This is intentional. Suhey owns and operates the academy. The tech must be maintainable by a non-developer.
-
----
-
-## Integration Points
-
-| Service | Purpose | Config Value |
-|---------|---------|-------------|
-| Stripe Payment Links | Course purchases | 4 pre-built links |
-| EmailJS | Contact forms, enrollment confirmation | Service ID + Template ID |
-| WhatsApp Business | Student communication | Phone number |
-| Google Calendar | Class booking | Calendar URL |
+- Frontend: HTML/CSS/JS (5,948kb)
+- Payments: Stripe (4 payment links)
+- Email: EmailJS
+- Contact: WhatsApp integration
+- Booking: Google Calendar
+- Deploy: Netlify (CI 10/10 passing)
 
 ---
 
-## Podcast Page
+## Components
 
-Live at: artifact URL (https://claude.ai/public/artifacts/958a26d0-7dda-4f3a-9858-6fad7554c428)  
-All podcast buttons on the landing page point here with `target="_blank"`.
+- Main site: index.html
+- Podcast page: live at artifact URL
+- Payment integration: Stripe links
+- Contact: WhatsApp + EmailJS
+- Booking: Google Calendar embed
+
+---
+
+## Data Flow
+
+Student visits → Browses content → Selects plan → Stripe checkout → EmailJS confirmation → Google Calendar booking
+
+---
+
+## Dependencies
+
+**Depends on**: Stripe, EmailJS, Google Calendar (all external)  
+**Depended on by**: echo-echolibrary-site (product catalog)
+
+---
+
+## Deployment
+
+See `README.md` for deploy instructions.
+
+
+---
+
+## Ecosystem Connection
+
+**Part of**: Echo Universe (45-repository sovereign AI and evidence ecosystem)  
+**Operator**: Nathan Poinsette (∇θ) | onlyecho822-source  
+**Ecosystem White Paper**: [`art-of-proof/docs/WHITE_PAPER_v3.md`](https://github.com/onlyecho822-source/art-of-proof/blob/main/docs/WHITE_PAPER_v3.md)  
+**Governance Protocol**: ECS v1.1-hardened (`echo-core`)  
+**Canonical Authority**: [`echo-core`](https://github.com/onlyecho822-source/echo-core)
 
 *∇θ — chain sealed, truth preserved.*
