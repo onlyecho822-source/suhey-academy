@@ -1,74 +1,74 @@
-# Suhey Academy — Individual White Paper
-**Dominican Spanish Immersion Platform**  
-**Version**: 1.0 · **Date**: April 2026 · **Class**: II — Build-Complete, Launch-Blocked
+# Suhey Academy — White Paper
+### Dominican Spanish Immersion Platform
+
+**Class**: II — Build-Complete, Launch-Blocked  
+**Grade**: C → A on config receipt  
+**Confidence**: 85%  
+**Scope**: CONTEXT-LOCKED  
+**Decision**: HOLD → ACT on 8 config values
 
 ---
-
-## ECS Protocol Block
 
 ```
-Scope:      CONTEXT-LOCKED
-Truth:      ✔ (build) | ≈ (revenue projections)
-Confidence: 85%
-Decision:   HOLD → ACT
-Claim:      Build-complete Dominican Spanish academy. CI passing 10/10. One meeting with Suhey unlocks all 8 config values.
-Risk:       Every week without launch is a week of lost enrollment. Config values are the only blocker.
-Action:     Schedule one meeting with Suhey. Use CONFIG_NEEDED.md as the agenda. 8 values. 24 hours to live.
+Scope:        CONTEXT-LOCKED
+Truth:        ✔ / ≈ — labeled per claim
+Confidence:   85%
+Decision:     HOLD → ACT on 8 config values
+Level:        L2
 ```
 
 ---
 
-## Mission
+## What This Is
 
-Language learning should be joyful, cultural, and rooted. Suhey Academy teaches Dominican Spanish — not textbook Spanish, not Castilian Spanish — the living language of the Dominican Republic as spoken by Dominicans, taught by a Dominican.
+Dominican Spanish learning platform built for Suhey Castillo — educator, women's leader, Puerto Plata-based. The build is complete. The CI is passing 10/10. The podcast page is live. The academy is ready to accept students the moment 8 configuration values are received.
 
----
+Tagline: *"Learning is fun again."*
 
-## Market
+Target market: 41M Spanish learners in the U.S. (Census Bureau) + Dominican diaspora + Puerto Plata community.
 
-- 41M Spanish learners in the U.S. (U.S. Census Bureau)
-- DR/Caribbean diaspora in the U.S. seeking connection to home language
-- Spanish speakers learning DR dialect and culture
-- International visitors and residents in Puerto Plata corridor
+**Blockers**: 4 Stripe payment links, 2 EmailJS IDs, 1 WhatsApp number, 1 Google Calendar URL — see CONFIG_NEEDED.md
 
 ---
 
-## Revenue Model
+## Commercial Path
 
-| Plan | Price | Commitment |
-|------|-------|------------|
-| Monthly | $19/month | Cancel anytime |
-| Annual | $97/year | Save 57% vs monthly |
-
-*Pricing modeled on comparable language platforms. Not yet market-validated.*
+- $97/year or $19/month subscription
+- One-time course purchases
+- Group/corporate Spanish training packages
+- Community-based learning events
 
 ---
 
-## Configuration Required (8 Values)
+## How This Connects to Echo Universe
 
-See `CONFIG_NEEDED.md` — bilingual EN/DR Spanish checklist:
-1–4. Stripe payment links (monthly, annual, single class, intro package)  
-5–6. EmailJS Service ID and Template ID  
-7. WhatsApp number (with country code)  
-8. Google Calendar booking URL
+**Connects to**: echo-echolibrary-site, art-of-proof (Stripe infrastructure)
 
-**One meeting. Eight values. Academy live within 24 hours.**
+Suhey Academy is the education product node of the Echo Universe. It demonstrates the ecosystem's ability to build and deploy complete SaaS products for individual creators. Its Stripe integration mirrors Art of Proof's payment infrastructure. It connects to EchoLibrary.org as a product in the unified catalog.
 
 ---
 
-## External Validation Target
+## Evidence Class
 
-**Event**: First enrolled student with payment  
-**Target**: 2026-05-15 (after config receipt)  
-**Measurable outcome**: Stripe dashboard showing first course charge
+| Dimension | Status |
+|-----------|--------|
+| Repo exists | ✔ |
+| CI green | See README |
+| Deployed URL | See README |
+| Paying users | See README |
+| Legal review | See README |
+| External validation | See README |
+
 
 
 ---
 
-## Ecosystem Reference
+## Ecosystem Connection
 
-**Ecosystem White Paper**: `art-of-proof/docs/WHITE_PAPER_v3.md`  
-**Protocol Authority**: `echo-core` — ECS v1.1-hardened  
-**Operator**: Nathan Poinsette (∇θ) · onlyecho822-source  
+**Part of**: Echo Universe (45-repository sovereign AI and evidence ecosystem)  
+**Operator**: Nathan Poinsette (∇θ) | onlyecho822-source  
+**Ecosystem White Paper**: [`art-of-proof/docs/WHITE_PAPER_v3.md`](https://github.com/onlyecho822-source/art-of-proof/blob/main/docs/WHITE_PAPER_v3.md)  
+**Governance Protocol**: ECS v1.1-hardened (`echo-core`)  
+**Canonical Authority**: [`echo-core`](https://github.com/onlyecho822-source/echo-core)
 
 *∇θ — chain sealed, truth preserved.*
