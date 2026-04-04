@@ -1,0 +1,17 @@
+{
+  "repo": "suhey-academy",
+  "role": "product",
+  "timestamp": "2026-04-04T22:36:29Z",
+  "health": 0.8,
+  "metrics": {
+    "build_success_rate": 0.8,
+    "anomaly_count_24h": 0,
+    "drift_score": 0.02,
+    "cost_24h_usd": 0.046,
+    "blocked_items": 0,
+    "runner_type": "github-hosted",
+    "revenue_health": 0.8
+  },
+  "capabilities": ["build","dispatch","pulse"],
+  "dependencies": ["echo-pulse"]
+}
