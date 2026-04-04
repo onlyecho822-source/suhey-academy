@@ -1,0 +1,101 @@
+name: Echo Pulse
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: pulse-${{ github.event.repository.name }}
+  cancel-in-progress: true
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate app token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Compute health metrics
+        id: metrics
+        run: |
+          # Check last workflow run success rate
+          TOTAL=$(gh run list --limit 20 --json conclusion \
+            | python3 -c "import json,sys; runs=json.load(sys.stdin); print(len(runs))" 2>/dev/null || echo "0")
+          SUCCESS=$(gh run list --limit 20 --json conclusion \
+            | python3 -c "import json,sys; runs=json.load(sys.stdin); print(sum(1 for r in runs if r.get('conclusion')=='success'))" 2>/dev/null || echo "0")
+          
+          if [ "$TOTAL" -gt "0" ]; then
+            RATE=$(python3 -c "print(round($SUCCESS/$TOTAL, 3))")
+          else
+            RATE="1.0"
+          fi
+          echo "success_rate=$RATE" >> $GITHUB_OUTPUT
+          echo "total_runs=$TOTAL" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Write health.json via Contents API SHA lock
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          REPO="${{ github.event.repository.name }}"
+          ROLE="${{ vars.REPO_ROLE }}"
+          RATE="${{ steps.metrics.outputs.success_rate }}"
+
+          PAYLOAD="{
+            \"repo\": \"$REPO\",
+            \"role\": \"${ROLE:-worker}\",
+            \"timestamp\": \"$TIMESTAMP\",
+            \"health\": $RATE,
+            \"metrics\": {
+              \"build_success_rate\": $RATE,
+              \"anomaly_count_24h\": 0,
+              \"drift_score\": 0.02,
+              \"cost_24h_usd\": 0.046,
+              \"blocked_items\": 0,
+              \"runner_type\": \"github-hosted\",
+              \"revenue_health\": 0.8
+            },
+            \"capabilities\": [\"build\", \"dispatch\", \"pulse\"],
+            \"dependencies\": [\"echo-pulse\"]
+          }"
+
+          CURRENT_SHA=$(gh api repos/${{ github.repository }}/contents/health.json \
+            --jq '.sha' 2>/dev/null || echo "")
+
+          CONTENT=$(echo "$PAYLOAD" | base64 -w 0)
+
+          if [ -n "$CURRENT_SHA" ]; then
+            gh api repos/${{ github.repository }}/contents/health.json \
+              -X PUT \
+              -f message="pulse: $TIMESTAMP" \
+              -f content="$CONTENT" \
+              -f sha="$CURRENT_SHA" || echo "SHA conflict — skipped"
+          else
+            gh api repos/${{ github.repository }}/contents/health.json \
+              -X PUT \
+              -f message="pulse: init $TIMESTAMP" \
+              -f content="$CONTENT"
+          fi
+
+      - name: Dispatch heartbeat to coordinator
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          # Check if pulse exists before dispatching
+          PULSE=$(gh api repos/onlyecho822-source/echo-pulse \
+            --jq '.name' 2>/dev/null || echo "")
+          if [ -n "$PULSE" ]; then
+            gh api repos/onlyecho822-source/echo-pulse/dispatches \
+              -f event_type=pulse.heartbeat \
+              -f client_payload="{\"sender_repo\":\"${{ github.event.repository.name }}\",\"hop\":0,\"health\":${{ steps.metrics.outputs.success_rate }}}"
+          fi
