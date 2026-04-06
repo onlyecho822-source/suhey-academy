@@ -1,10 +1,10 @@
 {
   "repo": "suhey-academy",
   "role": "product",
-  "timestamp": "2026-04-06T04:16:31Z",
-  "health": 0.85,
+  "timestamp": "2026-04-06T06:12:18Z",
+  "health": 0.8,
   "metrics": {
-    "build_success_rate": 0.85,
+    "build_success_rate": 0.8,
     "anomaly_count_24h": 0,
     "drift_score": 0.02,
     "cost_24h_usd": 0.046,
