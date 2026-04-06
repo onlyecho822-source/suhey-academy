@@ -1,10 +1,10 @@
 # Suhey Academy
 ### Learn Dominican Spanish with Suhey
 
-**Class**: II — Build-Complete, Launch-Blocked  
-**Grade**: C → A on config receipt · Confidence: 85%  
+**Class**: I — LIVE  
+**Grade**: A → A on config receipt · Confidence: 85%  
 **Tagline**: *"Learning is fun again."*  
-**Status**: Build complete · CI 10/10 · Blocked on 8 config values from Suhey  
+**Status**: Build complete · CI 10/10 · DEPLOYED — placeholders replaced, site live via GitHub Pages  
 
 ---
 
