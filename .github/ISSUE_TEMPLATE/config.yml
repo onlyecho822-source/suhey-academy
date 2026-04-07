@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Echo Universe Community
+    url: https://github.com/onlyecho822-source/Echo/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: Security Issue
+    url: https://github.com/onlyecho822-source/Echo/security/advisories/new
+    about: Report security vulnerabilities privately
