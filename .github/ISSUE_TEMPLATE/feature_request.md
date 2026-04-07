@@ -1,25 +1,22 @@
 ---
 name: Feature Request
-about: Suggest an idea for this project
+about: Suggest a new feature or enhancement
 title: '[FEATURE] '
 labels: enhancement
 assignees: ''
 ---
 
-## Is your feature request related to a problem?
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+## Problem Statement
+What problem does this feature solve?
 
-## Describe the solution you'd like
-A clear and concise description of what you want to happen.
+## Proposed Solution
+How would you like this to be implemented?
 
-## Describe alternatives you've considered
-A clear and concise description of any alternative solutions or features you've considered.
+## Alternatives Considered
+What other solutions did you consider?
 
 ## Additional Context
-Add any other context or screenshots about the feature request here.
-
-## Proposed Implementation (Optional)
-If you have ideas about how this could be implemented, share them here.
+Any other relevant information.
 
 ---
-**∇θ — chain sealed, truth preserved**
+∇θ — chain sealed, truth preserved
