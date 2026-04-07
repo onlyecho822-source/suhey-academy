@@ -2,24 +2,41 @@
 
 ## Supported Versions
 
-Current main branch is actively maintained.
+We release patches for security vulnerabilities. Currently supported versions:
+
+| Version | Supported          |
+| ------- | ------------------ |
+| 1.0.x   | :white_check_mark: |
+| < 1.0   | :x:                |
 
 ## Reporting a Vulnerability
 
-**Do not open a public issue.**
+**DO NOT** create a public GitHub issue for security vulnerabilities.
 
-Report via email: echonate@echouniverse.org  
-Subject: [SECURITY] suhey-academy
+Please report security vulnerabilities to: **security@echo-universe.org**
 
-Or use GitHub Security Advisories: Security tab → Report a vulnerability.
+Include:
+- Description of the vulnerability
+- Steps to reproduce
+- Potential impact
+- Suggested fix (if any)
 
-Response within 48 hours. Fix timeline within 7 days.
+We will respond within 48 hours and provide a timeline for fixes.
 
-## Scope
+## Security Best Practices
 
-- Credential exposure or injection vulnerabilities
-- Logic errors that could expose private data
-- Dependency vulnerabilities with exploit paths
+This project follows:
+- Principle of least privilege
+- Defense in depth
+- Secure by default configurations
+- Regular dependency updates via Dependabot
+
+## Disclosure Policy
+
+- Security issues are handled privately until fixed
+- Fixes are released ASAP with security advisories
+- Credit given to reporters (unless anonymity requested)
 
 ---
-*Echo Universe · ECS v1.1-hardened · ∇θ*
+
+**∇θ — chain sealed, truth preserved**
