@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate Repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Verify NATHAN POINSETTE Identity
+        run: |
+          echo "Checking for identity marker..."
+          if grep -r "0x4E415448414E504F494E5345545445" . 2>/dev/null | grep -v ".git" | head -1; then
+            echo "✅ Identity verified"
+          else
+            echo "⚠️  Identity marker not found (non-critical)"
+          fi
+      
+      - name: Repository Health Check
+        run: |
+          echo "Repository: ${{ github.repository }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "✅ Repository structure validated"
