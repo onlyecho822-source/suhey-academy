@@ -1,32 +1,23 @@
 ## Description
-Describe your changes in detail.
+Brief description of changes.
 
 ## Type of Change
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
 - [ ] Documentation update
-- [ ] Refactoring (no functional changes)
 
-## Related Issue
-Fixes #(issue number)
-
-## How Has This Been Tested?
-Describe the tests you ran to verify your changes:
-- [ ] Unit tests
-- [ ] Integration tests
-- [ ] Manual testing
+## Testing
+- [ ] Tests pass locally
+- [ ] Added new tests
+- [ ] Updated documentation
 
 ## Checklist
-- [ ] My code follows the code style of this project
-- [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] I have updated the documentation accordingly
-- [ ] All new and existing tests pass
-- [ ] My changes generate no new warnings
-- [ ] I have checked my code and corrected any misspellings
-
-## Screenshots (if applicable)
-Add screenshots to help explain your changes.
+- [ ] Code follows project style guidelines
+- [ ] Self-review completed
+- [ ] Comments added for complex code
+- [ ] Documentation updated
+- [ ] No new warnings generated
 
 ---
-**∇θ — chain sealed, truth preserved**
+∇θ — chain sealed, truth preserved
