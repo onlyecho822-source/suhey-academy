@@ -1,23 +1,21 @@
 ---
 name: Bug Report
-about: Create a report to help us improve
+about: Report a bug or unexpected behavior
 title: '[BUG] '
 labels: bug
 assignees: ''
 ---
 
-## Bug Description
-A clear and concise description of what the bug is.
+## Description
+A clear description of the bug.
 
-## To Reproduce
-Steps to reproduce the behavior:
+## Steps to Reproduce
 1. Go to '...'
 2. Click on '...'
-3. Scroll down to '...'
-4. See error
+3. See error
 
 ## Expected Behavior
-A clear and concise description of what you expected to happen.
+What you expected to happen.
 
 ## Actual Behavior
 What actually happened.
@@ -25,13 +23,10 @@ What actually happened.
 ## Environment
 - OS: [e.g., Ubuntu 22.04]
 - Version: [e.g., v1.0.0]
-- Python/Node version: [e.g., Python 3.11]
-
-## Screenshots
-If applicable, add screenshots to help explain your problem.
+- Other relevant details
 
 ## Additional Context
-Add any other context about the problem here.
+Any other relevant information.
 
 ---
-**∇θ — chain sealed, truth preserved**
+∇θ — chain sealed, truth preserved
