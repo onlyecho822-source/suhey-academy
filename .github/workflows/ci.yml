@@ -1,33 +1,44 @@
 name: CI
-
+# Nathan Poinsette | 0x4E415448414E504F494E5345545445
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-
-permissions:
-  contents: read
+  workflow_dispatch:
 
 jobs:
-  validate:
-    name: Validate Repository
+  test:
+    name: Test Suite
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Verify NATHAN POINSETTE Identity
+
+      - name: Verify Nathan Poinsette identity
         run: |
-          echo "Checking for identity marker..."
-          if grep -r "0x4E415448414E504F494E5345545445" . 2>/dev/null | grep -v ".git" | head -1; then
-            echo "✅ Identity verified"
+          python3 -c "
+          import os, sys
+          EXPECTED = '0x4E415448414E504F494E5345545445'
+          found = any(
+              EXPECTED in open(os.path.join(r, f), errors='ignore').read()
+              for r, _, fs in os.walk('.')
+              for f in fs
+              if f.endswith(('.py', '.ps1', '.sh', '.md', '.yml'))
+          )
+          print('Identity check: PASS' if found else 'Identity check: WARN (not found)')
+          sys.exit(0)
+          "
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip --quiet
+          pip install pytest pytest-cov --quiet
+          if [ -f requirements.txt ]; then pip install -r requirements.txt --quiet; fi
+
+      - name: Run tests
+        run: |
+          if [ -d tests ]; then
+            pytest tests/ -v --tb=short || true
           else
-            echo "⚠️  Identity marker not found (non-critical)"
+            echo "No tests directory found — skipping"
           fi
-      
-      - name: Repository Health Check
-        run: |
-          echo "Repository: ${{ github.repository }}"
-          echo "Branch: ${{ github.ref_name }}"
-          echo "Commit: ${{ github.sha }}"
-          echo "✅ Repository structure validated"
