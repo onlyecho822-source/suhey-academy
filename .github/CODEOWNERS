@@ -1,5 +1,22 @@
-# CODEOWNERS
-# All changes require review from the operator
-# Echo Universe · ECS v1.1-hardened · ∇θ
+# Code Owners for Echo Universe
+# These owners will be requested for review when someone opens a PR
 
+# Default owner for everything
 * @onlyecho822-source
+
+# Core infrastructure
+/.github/ @onlyecho822-source
+/scripts/ @onlyecho822-source
+/tests/ @onlyecho822-source
+
+# Documentation
+/docs/ @onlyecho822-source
+*.md @onlyecho822-source
+
+# Configuration files
+*.yml @onlyecho822-source
+*.yaml @onlyecho822-source
+*.json @onlyecho822-source
+*.toml @onlyecho822-source
+
+# ∇θ — chain sealed, truth preserved
