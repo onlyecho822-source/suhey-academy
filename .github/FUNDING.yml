@@ -1,9 +1,5 @@
-# Echo Universe — Funding
-# Support the mission at EchoLibrary.org
+# Echo Universe GitHub Sponsors
+# Support the development of autonomous systems research
 
-custom:
-  - "https://echolibrary.org"
-  - "https://artofproof.com"
-
-# GitHub Sponsors — apply at github.com/sponsors (W-8BEN required for DR)
-github: []
+github: onlyecho822
+custom: ['https://github.com/sponsors/onlyecho822']
