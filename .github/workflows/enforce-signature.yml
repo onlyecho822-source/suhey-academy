@@ -1,0 +1,35 @@
+name: ∇θ Identity Enforcement
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  enforce-identity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Check ∇θ signatures
+        run: |
+          python .github/scripts/check_headers.py
+
+      - name: Report results
+        if: failure()
+        run: |
+          echo "❌ Identity enforcement failed"
+          echo "∇θ signature missing or invalid"
+          echo "Required: __NATHAN_POINSETTE__ constant and ∇θ header/footer"
+          exit 1
