@@ -1,22 +1,18 @@
-# Code Owners for Echo Universe
-# These owners will be requested for review when someone opens a PR
+# Code ownership and review requirements
+# Each line is a file pattern followed by one or more owners
 
-# Default owner for everything
+# Default owners for everything in the repo
 * @onlyecho822-source
 
-# Core infrastructure
-/.github/ @onlyecho822-source
-/scripts/ @onlyecho822-source
-/tests/ @onlyecho822-source
-
 # Documentation
-/docs/ @onlyecho822-source
 *.md @onlyecho822-source
+docs/ @onlyecho822-source
 
-# Configuration files
-*.yml @onlyecho822-source
-*.yaml @onlyecho822-source
-*.json @onlyecho822-source
-*.toml @onlyecho822-source
+# CI/CD workflows
+.github/ @onlyecho822-source
+
+# Core source code
+src/ @onlyecho822-source
+lib/ @onlyecho822-source
 
 # ∇θ — chain sealed, truth preserved
