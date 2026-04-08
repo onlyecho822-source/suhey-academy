@@ -1,36 +1,12 @@
 name: CI
-# Minimal working CI - validates identity signature only
-
-on:
-  push:
-    branches: ["**"]
-  pull_request:
-    branches: ["**"]
-  workflow_dispatch:
-
-permissions:
-  contents: read
-
+on: [push, pull_request]
 jobs:
-  validate:
-    name: Validate NATHAN POINSETTE Identity
+  test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Verify identity constant
-        run: |
-          IDENTITY="0x4E415448414E504F494E5345545445"
-          if grep -r "$IDENTITY" . --include="*.py" --include="*.ps1" --include="*.sh" --include="*.md" 2>/dev/null | grep -q "$IDENTITY"; then
-            echo "✅ Identity verified: $IDENTITY"
-            exit 0
-          else
-            echo "⚠️ Identity not found - acceptable for minimal repos"
-            exit 0
-          fi
-      
-      - name: Repository status
-        run: |
-          echo "✅ Repository: ${{ github.repository }}"
-          echo "✅ Commit: ${{ github.sha }}"
-          echo "✅ CI passing"
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with: {python-version: "3.11"}
+      - run: pip install pytest
+      - run: pip install -e . 2>/dev/null || true
+      - run: pytest tests/ -v 2>/dev/null || pytest --tb=short -q
