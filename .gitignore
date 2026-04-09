@@ -1,0 +1,24 @@
+# Echo Universe — canonical .gitignore
+__pycache__/
+*.py[cod]
+*.so
+build/
+dist/
+*.egg-info/
+.venv/
+venv/
+.env
+.env.local
+node_modules/
+.next/
+.pytest_cache/
+.coverage
+htmlcov/
+.idea/
+.vscode/
+*.swp
+.DS_Store
+*.log
+*.pem
+*.key
+# ∇θ — chain sealed, truth preserved
