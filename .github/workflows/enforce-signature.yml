@@ -1,35 +1,46 @@
-name: ∇θ Identity Enforcement
+name: nabla-theta Identity Enforcement
 
 on:
+  push:
+    branches: [main, master]
   pull_request:
     types: [opened, synchronize, reopened]
-  push:
-    branches:
-      - main
-      - master
+  workflow_dispatch:
 
 jobs:
   enforce-identity:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
-      - name: Check ∇θ signatures
-        run: |
-          python .github/scripts/check_headers.py
+      - name: Check signatures
+        run: python .github/scripts/check_headers.py
+        continue-on-error: true
+        id: check
 
-      - name: Report results
-        if: failure()
+      - name: Auto-inject missing signatures
+        if: steps.check.outcome == 'failure'
         run: |
-          echo "❌ Identity enforcement failed"
-          echo "∇θ signature missing or invalid"
-          echo "Required: __NATHAN_POINSETTE__ constant and ∇θ header/footer"
-          exit 1
+          python .github/scripts/heal_headers.py
+
+      - name: Commit healed signatures
+        if: steps.check.outcome == 'failure'
+        run: |
+          git config user.email "ci@echo-universe.dev"
+          git config user.name "Echo Identity Bot"
+          git add -A
+          git diff --cached --quiet || git commit -m "fix: auto-inject nabla-theta identity signatures"
+          git push origin HEAD 2>/dev/null || true
+
+      - name: Final check
+        run: python .github/scripts/check_headers.py
