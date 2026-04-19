@@ -1,0 +1,247 @@
+# .echo/governance.yaml
+# Echo Universe — The 9 Laws: Formal Constraint Physics
+# Source: Master Handoff Specification 2026-04-08
+# ∇θ Operator — chain sealed, truth preserved
+
+version: "1.0.0"
+sealed_at: "2026-04-08"
+echo_seal: "d2a5f4db8b7b136e9f1d99ae013938c3e7a86049a9446b1874f30bc084ff2b0e"
+
+description: |
+  The 9 Laws define the constraint physics of the Echo cellular coordination mesh.
+  Every cell (repository) must enforce these laws. Violations cause deterministic
+  rejection or isolation — never silent acceptance.
+
+laws:
+  - id: "law_1_locality"
+    number: 1
+    name: "Locality"
+    statement: "A cell operates only on local state and explicitly declared shared context."
+    description: |
+      No cell may silently depend on external state. Dependencies must be declared
+      in capabilities.yaml. Undeclared dependencies cause signal rejection.
+    enforcement:
+      - "Validate incoming signal context against capabilities.yaml declarations"
+      - "Reject signals referencing undeclared resource dependencies"
+      - "Log all context declarations for audit trail"
+    violation_response:
+      status: "REJECTING"
+      http_equivalent: 422
+      error_code: "UNDECLARED_DEPENDENCY"
+    rationale: "Prevents hidden coupling between cells. Enforces explicit architecture."
+
+  - id: "law_2_idempotency"
+    number: 2
+    name: "Idempotency"
+    statement: "Same input produces same outcome. No side effects from repeated signals."
+    description: |
+      Every signal carries an idempotency_key. If a cell has already processed
+      a key, it rejects the duplicate without re-executing.
+    enforcement:
+      - "Track processed idempotency_keys in state.json under idempotency_buffer"
+      - "Check incoming signal.payload.idempotency_key against buffer on every signal"
+      - "Reject if key already exists with DUPLICATE_SIGNAL"
+    implementation:
+      buffer_config:
+        max_keys: 1000
+        eviction_policy: "FIFO"
+        decay_after_hours: 168
+      state_path: "idempotency_buffer"
+    violation_response:
+      status: "REJECTING"
+      http_equivalent: 409
+      error_code: "DUPLICATE_SIGNAL"
+    rationale: "Prevents double-execution from retries, network glitches, or bad actors."
+
+  - id: "law_3_propagation_delay"
+    number: 3
+    name: "Propagation Delay"
+    statement: "Inter-cell communication is asynchronous. Cells never block waiting for downstream acknowledgment."
+    description: |
+      A cell emits signals and transitions to IDLE without confirming receipt.
+      Downstream cells process at their own pace. Eventual consistency is acceptable.
+    enforcement:
+      - "Emit signals via repository_dispatch without waiting for response"
+      - "No synchronous cross-cell calls"
+      - "Downstream state inferred from ledger, not direct polling"
+    violation_response:
+      status: "CONFLICT_STALLED"
+      http_equivalent: 503
+      error_code: "SYNCHRONOUS_DEPENDENCY_VIOLATION"
+    rationale: "Prevents cascading failures. Isolates fault domains."
+
+  - id: "law_4_state_half_life"
+    number: 4
+    name: "State Half-Life"
+    statement: "Old state must decay. Signals expire. Buffers self-trim."
+    description: |
+      Every signal has an expires_at timestamp. Expired signals are rejected.
+      Idempotency buffers self-trim at max_keys. State history rolls over.
+    enforcement:
+      - "Parse expires_at from signal header on every ingest"
+      - "Reject signal if datetime.utcnow() > expires_at"
+      - "Trim idempotency_buffer when len > max_keys using FIFO eviction"
+      - "Trim state.history when len > max_history"
+    implementation:
+      max_signal_age_hours: 24
+      max_history_entries: 100
+    violation_response:
+      status: "REJECTING"
+      http_equivalent: 410
+      error_code: "SIGNAL_EXPIRED"
+    rationale: "Prevents accumulation of stale state. Bounds memory growth."
+
+  - id: "law_5_backpressure"
+    number: 5
+    name: "Back-Pressure"
+    statement: "Cells throttle under load. No unbounded queue acceptance."
+    description: |
+      GitHub Actions concurrency groups enforce single-execution per cell.
+      Incoming signals queue at the GitHub layer, not within receptor logic.
+    enforcement:
+      - "Concurrency group configured: group: cell-{repo_name}-state"
+      - "cancel-in-progress: false (queue, not cancel)"
+      - "Max concurrent workflows: 1 per cell"
+    implementation:
+      workflow_config:
+        concurrency_group: "cell-{repo_name}-state"
+        cancel_in_progress: false
+    violation_response:
+      status: "CONFLICT_STALLED"
+      http_equivalent: 429
+      error_code: "BACKPRESSURE_ENGAGED"
+    rationale: "Prevents resource exhaustion. Enforces ordered execution."
+
+  - id: "law_6_identity_continuity"
+    number: 6
+    name: "Identity Continuity"
+    statement: "Every cell has verifiable, persistent identity. Signals carry verifiable source."
+    description: |
+      Each cell declares its identity in capabilities.yaml. Signals carry
+      trust_level and verification_ref. Internal signals require internal trust.
+      Beta phase adds HMAC-SHA256 verification.
+    enforcement:
+      - "Validate signal.auth.trust_level against accepted_trust_levels in capabilities.yaml"
+      - "Reject signals with trust_level not in accepted list"
+      - "Log identity violations separately from content violations"
+    implementation:
+      alpha_phase: "content_hash verification"
+      beta_phase: "HMAC-SHA256 with GitHub Secrets key distribution"
+      accepted_trust_levels:
+        - "internal"
+        - "trusted_external"
+    violation_response:
+      status: "ISOLATING"
+      http_equivalent: 401
+      error_code: "TRUST_VIOLATION"
+    rationale: "Prevents impersonation. Enables external node onboarding in Beta."
+
+  - id: "law_7_causal_traceability"
+    number: 7
+    name: "Causal Traceability"
+    statement: "Every action is traceable to its causal chain. No orphaned executions."
+    description: |
+      root_trace_id links all signals in a causal chain. Every state transition
+      is appended to the ledger. Trace reconstruction is always possible.
+    enforcement:
+      - "Append every state transition to coordination_log.jsonl with trace_id"
+      - "Preserve root_trace_id through all propagations (never generate new root)"
+      - "Link parent_id for all hop_count > 0 signals"
+    implementation:
+      ledger_path: "coordination_log.jsonl"
+      ledger_format: "append-only JSONL"
+      ledger_fields:
+        - "timestamp"
+        - "root_trace_id"
+        - "trace_id"
+        - "parent_id"
+        - "state_from"
+        - "state_to"
+        - "event"
+        - "idempotency_key"
+    violation_response:
+      status: "REJECTING"
+      http_equivalent: 400
+      error_code: "TRACE_CHAIN_BROKEN"
+    rationale: "Enables post-hoc debugging. Provides immutable audit trail."
+
+  - id: "law_8_selective_attention"
+    number: 8
+    name: "Selective Attention"
+    statement: "Cells ignore signals outside their declared capabilities. No accidental execution."
+    description: |
+      capabilities.yaml declares receptor_classes the cell accepts.
+      Signals targeting undeclared receptor classes are silently rejected (logged).
+    enforcement:
+      - "Parse receptor_class from signal.payload.receptor_class"
+      - "Check against accepted_receptor_classes in capabilities.yaml"
+      - "Reject mismatches with RECEPTOR_CLASS_MISMATCH"
+    implementation:
+      capabilities_path: ".echo/capabilities.yaml"
+    violation_response:
+      status: "REJECTING"
+      http_equivalent: 404
+      error_code: "RECEPTOR_CLASS_MISMATCH"
+    rationale: "Prevents accidental execution. Enforces capability boundaries."
+
+  - id: "law_9_convergence"
+    number: 9
+    name: "Convergence"
+    statement: "Cells settle to a stable state or declare conflict. No infinite oscillation."
+    description: |
+      If a cell cannot complete a state transition within timeout, it enters
+      CONFLICT_STALLED and requires CONTROL/REBOOT. No silent retry loops.
+    enforcement:
+      - "Timeout enforcement: 60s for VALIDATING, 120s for SYNCHRONIZING_MEMORY"
+      - "Max consecutive failures: 3 before CONTROL/REBOOT trigger"
+      - "CONFLICT_STALLED requires explicit CONTROL/* signal to exit"
+    implementation:
+      timeouts:
+        VALIDATING: 60
+        SYNCHRONIZING_MEMORY: 120
+        EMITTING: 30
+      max_consecutive_failures: 3
+    violation_response:
+      status: "CONFLICT_STALLED"
+      http_equivalent: 409
+      error_code: "CONVERGENCE_FAILURE"
+    rationale: "Prevents deadlock. Forces explicit intervention on sustained failure."
+
+enforcement_matrix:
+  description: "Validation sequence on every incoming signal"
+  sequence:
+    - step: 1
+      law: "law_4_state_half_life"
+      check: "expires_at > datetime.utcnow()"
+      failure: "REJECTING / SIGNAL_EXPIRED"
+    - step: 2
+      law: "law_8_selective_attention"
+      check: "receptor_class in capabilities.accepted_receptor_classes"
+      failure: "REJECTING / RECEPTOR_CLASS_MISMATCH"
+    - step: 3
+      law: "law_6_identity_continuity"
+      check: "trust_level in capabilities.accepted_trust_levels"
+      failure: "ISOLATING / TRUST_VIOLATION"
+    - step: 4
+      law: "law_2_idempotency"
+      check: "idempotency_key not in state.idempotency_buffer"
+      failure: "REJECTING / DUPLICATE_SIGNAL"
+    - step: 5
+      law: "law_1_locality"
+      check: "context_refs subset_of capabilities.declared_dependencies"
+      failure: "REJECTING / UNDECLARED_DEPENDENCY"
+    - step: 6
+      law: "law_9_convergence"
+      check: "current_state != CONFLICT_STALLED"
+      failure: "REJECTING / STALLED_CELL"
+
+implementation_checklist:
+  per_repository:
+    - "[ ] governance.yaml present at .echo/governance.yaml"
+    - "[ ] capabilities.yaml declares receptor_classes and trust_levels"
+    - "[ ] state.json contains idempotency_buffer array"
+    - "[ ] receptor.py validates against all 9 laws in order"
+    - "[ ] coordination_log.jsonl append-only (never truncated)"
+    - "[ ] Concurrency group configured in workflow"
+    - "[ ] Timeout enforcement active (VALIDATING=60s)"
+    - "[ ] CONTROL/* signals handled (REBOOT, RESYNC, ISOLATE)"
