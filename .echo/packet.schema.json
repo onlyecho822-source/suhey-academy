@@ -1,0 +1,246 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/onlyecho822-source/echo-architecture/specifications/packet.schema.json",
+  "title": "Echo Signal Packet",
+  "description": "Standardized signal packet format for Echo cellular coordination mesh. Source: Master Handoff Specification 2026-04-08.",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["header", "auth", "payload"],
+  "additionalProperties": false,
+
+  "properties": {
+    "header": {
+      "type": "object",
+      "description": "Routing and lifecycle metadata",
+      "required": ["root_trace_id", "trace_id", "timestamp", "expires_at", "max_hops"],
+      "additionalProperties": false,
+      "properties": {
+        "root_trace_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Immutable identifier for the entire causal chain. Never regenerated during propagation."
+        },
+        "trace_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Identifier for this specific signal instance. Unique per hop."
+        },
+        "parent_id": {
+          "oneOf": [
+            {"type": "string", "format": "uuid"},
+            {"type": "null"}
+          ],
+          "description": "trace_id of the signal that caused this one. null for origin signals (hop_count=0)."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO-8601 UTC timestamp when signal was created."
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO-8601 UTC timestamp after which signal must be rejected (Law 4: State Half-Life)."
+        },
+        "hop_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10,
+          "default": 0,
+          "description": "Number of cells this signal has traversed. 0 for origin."
+        },
+        "max_hops": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "description": "Maximum allowed hops before signal is discarded."
+        },
+        "schema_version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "default": "1.0.0",
+          "description": "Packet schema version for forward compatibility."
+        }
+      },
+      "if": {
+        "properties": {"hop_count": {"minimum": 1}}
+      },
+      "then": {
+        "required": ["parent_id"],
+        "properties": {
+          "parent_id": {"type": "string", "format": "uuid"}
+        }
+      }
+    },
+
+    "auth": {
+      "type": "object",
+      "description": "Identity and trust verification (Law 6: Identity Continuity)",
+      "required": ["trust_level", "verification_ref"],
+      "additionalProperties": false,
+      "properties": {
+        "trust_level": {
+          "type": "string",
+          "enum": ["internal", "trusted_external", "untrusted"],
+          "description": "Trust classification. internal = same org, trusted_external = allowlisted, untrusted = reject."
+        },
+        "verification_ref": {
+          "type": "string",
+          "description": "Alpha: source repo name. Beta: HMAC-SHA256 signature of payload."
+        },
+        "hmac_signature": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Beta phase: HMAC-SHA256 hex digest. Required when trust_level=trusted_external."
+        },
+        "issuer": {
+          "type": "string",
+          "description": "GitHub repository or service that issued this signal."
+        }
+      }
+    },
+
+    "payload": {
+      "type": "object",
+      "description": "Signal content and execution instructions",
+      "required": ["intent", "operation", "receptor_class", "idempotency_key"],
+      "additionalProperties": false,
+      "properties": {
+        "intent": {
+          "type": "string",
+          "enum": ["COMMAND", "QUERY", "NOTIFY", "CONTROL"],
+          "description": "High-level signal intent. CONTROL reserved for CONTROL/* administrative signals."
+        },
+        "operation": {
+          "type": "string",
+          "enum": ["ANALYZE", "FORWARD", "VALIDATE", "ROLLBACK", "AUDIT", "HEALTH_CHECK", "REBOOT", "RESYNC", "ISOLATE"],
+          "description": "Specific operation to execute."
+        },
+        "receptor_class": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*\\.v[0-9]+$",
+          "description": "Target receptor class in format 'name.v{version}'. Must match cell capabilities.",
+          "examples": ["analyzer.v1", "rollback.v1", "health.v1"]
+        },
+        "idempotency_key": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 128,
+          "description": "Unique key for this signal execution. Duplicate keys rejected (Law 2: Idempotency).",
+          "examples": ["deploy-2026-04-08-a1b2c3d4", "rollback-prod-20260408T120000Z"]
+        },
+        "data": {
+          "type": "object",
+          "description": "Operation-specific payload data. Schema varies by receptor_class.",
+          "additionalProperties": true
+        },
+        "context": {
+          "type": "object",
+          "description": "Shared context declarations required for Law 1 (Locality) validation.",
+          "additionalProperties": true
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "default": 5,
+          "description": "Signal priority. Higher = process first when queue exists."
+        }
+      }
+    },
+
+    "meta": {
+      "type": "object",
+      "description": "Optional metadata for observability and debugging",
+      "additionalProperties": true,
+      "properties": {
+        "origin_repo": {"type": "string"},
+        "origin_workflow": {"type": "string"},
+        "origin_run_id": {"type": "string"},
+        "tags": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    }
+  },
+
+  "examples": [
+    {
+      "_comment": "Example 1: Valid origin signal",
+      "header": {
+        "root_trace_id": "550e8400-e29b-41d4-a716-446655440000",
+        "trace_id": "550e8400-e29b-41d4-a716-446655440000",
+        "parent_id": null,
+        "timestamp": "2026-04-08T12:00:00Z",
+        "expires_at": "2026-04-09T12:00:00Z",
+        "hop_count": 0,
+        "max_hops": 3,
+        "schema_version": "1.0.0"
+      },
+      "auth": {
+        "trust_level": "internal",
+        "verification_ref": "echo-forge",
+        "issuer": "onlyecho822-source/echo-forge"
+      },
+      "payload": {
+        "intent": "COMMAND",
+        "operation": "ANALYZE",
+        "receptor_class": "analyzer.v1",
+        "idempotency_key": "analyze-2026-04-08-550e8400",
+        "data": {"target": "dependency_graph"},
+        "priority": 5
+      }
+    },
+    {
+      "_comment": "Example 2: Propagated signal (hop_count > 0)",
+      "header": {
+        "root_trace_id": "550e8400-e29b-41d4-a716-446655440000",
+        "trace_id": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+        "parent_id": "550e8400-e29b-41d4-a716-446655440000",
+        "timestamp": "2026-04-08T12:01:00Z",
+        "expires_at": "2026-04-09T12:00:00Z",
+        "hop_count": 1,
+        "max_hops": 3,
+        "schema_version": "1.0.0"
+      },
+      "auth": {
+        "trust_level": "internal",
+        "verification_ref": "echo-sentinel",
+        "issuer": "onlyecho822-source/echo-sentinel"
+      },
+      "payload": {
+        "intent": "NOTIFY",
+        "operation": "FORWARD",
+        "receptor_class": "analyzer.v1",
+        "idempotency_key": "analyze-2026-04-08-550e8400-hop1",
+        "priority": 5
+      }
+    },
+    {
+      "_comment": "Example 3: CONTROL signal (administrative)",
+      "header": {
+        "root_trace_id": "6ba7b811-9dad-11d1-80b4-00c04fd430c8",
+        "trace_id": "6ba7b811-9dad-11d1-80b4-00c04fd430c8",
+        "parent_id": null,
+        "timestamp": "2026-04-08T15:00:00Z",
+        "expires_at": "2026-04-08T15:05:00Z",
+        "hop_count": 0,
+        "max_hops": 1,
+        "schema_version": "1.0.0"
+      },
+      "auth": {
+        "trust_level": "internal",
+        "verification_ref": "echo-kraken-brain",
+        "issuer": "onlyecho822-source/echo-kraken-brain"
+      },
+      "payload": {
+        "intent": "CONTROL",
+        "operation": "REBOOT",
+        "receptor_class": "control.v1",
+        "idempotency_key": "reboot-2026-04-08T150000Z",
+        "priority": 10
+      }
+    }
+  ]
+}
