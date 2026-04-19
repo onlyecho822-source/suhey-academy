@@ -1,0 +1,270 @@
+# .echo/recovery.yaml
+# Echo Universe — Recovery Protocol Specification
+# Source: Master Handoff Specification 2026-04-08
+# ∇θ Operator — chain sealed, truth preserved
+
+version: "1.0.0"
+sealed_at: "2026-04-08"
+
+description: |
+  Defines the complete failure recovery protocol for Echo cells.
+  Three recovery signal types (REBOOT, RESYNC, ISOLATE) handle
+  all known failure modes deterministically.
+
+failure_detection:
+  automatic_triggers:
+    signal_processing_failure:
+      description: "3 consecutive signal processing failures"
+      threshold: 3
+      window: "consecutive failures"
+      counter_reset: "on successful processing"
+      action: "Trigger CONTROL/REBOOT automatically"
+      
+    convergence_timeout:
+      description: "Cell stuck in CONFLICT_STALLED"
+      threshold: 60
+      unit: "minutes"
+      condition: "state.current_state == CONFLICT_STALLED"
+      action: "Trigger CONTROL/REBOOT"
+      
+    sync_failure:
+      description: "Git push fails repeatedly"
+      threshold: 3
+      action: "Trigger CONTROL/REBOOT after 3rd failure"
+      
+    isolation_timeout:
+      description: "Cell in ISOLATING with no human response"
+      threshold: 86400
+      unit: "seconds"
+      action: "Auto-exit ISOLATING to IDLE"
+
+recovery_signals:
+  CONTROL_REBOOT:
+    description: "Hard reset. Returns cell to genesis state."
+    intent: "CONTROL"
+    operation: "REBOOT"
+    receptor_class: "control.v1"
+    
+    trigger_conditions:
+      automatic:
+        - "3 consecutive processing failures"
+        - "CONFLICT_STALLED for > 60 minutes"
+        - "state.json corruption detected"
+      manual:
+        - "Operator intervention required"
+        - "Pre-maintenance reset"
+    
+    pre_conditions:
+      - "Backup current state.json to state.json.bak"
+      - "Log reboot trigger reason to coordination_log.jsonl"
+    
+    actions:
+      - step: 1
+        action: "Set state.json to genesis template"
+        detail: |
+          {
+            "cell_id": "{repo_name}",
+            "current_state": "IDLE",
+            "processing_count": 0,
+            "rejection_count": 0,
+            "failure_count": 0,
+            "stalled": false,
+            "isolation_mode": false,
+            "idempotency_buffer": [],
+            "history": [],
+            "last_reboot": "{timestamp}",
+            "reboot_reason": "{reason}"
+          }
+      - step: 2
+        action: "Clear idempotency_buffer array"
+        note: "Allows previously-seen idempotency_keys to be re-processed after reboot"
+      - step: 3
+        action: "Set stalled=false, isolation_mode=false"
+      - step: 4
+        action: "Preserve coordination_log.jsonl"
+        note: "NEVER delete history. Audit trail is immutable."
+      - step: 5
+        action: "git add .echo/state.json && git commit -m 'recovery: CONTROL/REBOOT executed'"
+      - step: 6
+        action: "git push origin main"
+      - step: 7
+        action: "Transition to IDLE"
+    
+    post_conditions:
+      - "state.json.current_state == IDLE"
+      - "state.json.stalled == false"
+      - "state.json.isolation_mode == false"
+      - "Reboot event in coordination_log.jsonl"
+    
+    risks:
+      - "Loss of in-flight work (signals being processed)"
+      - "Duplicate signal re-processing (idempotency buffer cleared)"
+      - "Brief service interruption"
+    
+    mitigation:
+      - "Only trigger on confirmed failure, not transient issues"
+      - "Log reboot reason for post-mortem"
+      - "Monitor for duplicate processing after reboot"
+    
+    authorization:
+      required_trust_level: "internal"
+      required_operation: "REBOOT"
+      required_intent: "CONTROL"
+    
+    rollback: "Restore state.json.bak if reboot causes issues"
+
+  CONTROL_RESYNC:
+    description: "Reconstruct state from ledger. Non-destructive recovery."
+    intent: "CONTROL"
+    operation: "RESYNC"
+    receptor_class: "control.v1"
+    
+    trigger_conditions:
+      - "state.json suspected corrupt (hash mismatch)"
+      - "State inconsistency detected vs ledger"
+      - "After manual git operations that may have drifted state"
+    
+    pre_conditions:
+      - "coordination_log.jsonl must be intact"
+      - "Log resync trigger reason"
+    
+    actions:
+      - step: 1
+        action: "Read all entries from coordination_log.jsonl"
+      - step: 2
+        action: "Identify genesis entry (root with no parent)"
+      - step: 3
+        action: "Replay state transitions chronologically"
+        detail: "For each ledger entry: apply transition to reconstructed state"
+      - step: 4
+        action: "Construct new state.json from replayed transitions"
+      - step: 5
+        action: "Compare reconstructed state vs current state.json"
+      - step: 6
+        action: "Log discrepancies"
+      - step: 7
+        action: "Commit reconstructed state.json"
+      - step: 8
+        action: "Transition to IDLE"
+    
+    post_conditions:
+      - "state.json consistent with coordination_log.jsonl"
+      - "Resync event logged"
+    
+    risks:
+      - "Longer recovery time than REBOOT"
+      - "Ledger corruption makes resync impossible"
+    
+    authorization:
+      required_trust_level: "internal"
+      required_operation: "RESYNC"
+      required_intent: "CONTROL"
+
+  CONTROL_ISOLATE:
+    description: "Force cell into defensive quarantine. Proactive security measure."
+    intent: "CONTROL"
+    operation: "ISOLATE"
+    receptor_class: "control.v1"
+    
+    trigger_conditions:
+      - "Security incident detected"
+      - "Anomalous signal patterns"
+      - "Pre-maintenance isolation"
+      - "Operator decision to quarantine"
+    
+    actions:
+      - step: 1
+        action: "Abort current processing immediately"
+      - step: 2
+        action: "Set state.json.isolation_mode = true"
+      - step: 3
+        action: "Set state.json.isolation_timestamp = now"
+      - step: 4
+        action: "Set state.json.isolation_reason = trigger_reason"
+      - step: 5
+        action: "Reject all subsequent signals except CONTROL/REBOOT"
+      - step: 6
+        action: "Commit isolation state"
+    
+    exit_conditions:
+      manual: "CONTROL/REBOOT signal received"
+      automatic: "24-hour timeout with no human response"
+    
+    authorization:
+      required_trust_level: "internal"
+      required_operation: "ISOLATE"
+      required_intent: "CONTROL"
+
+retry_strategy:
+  description: "Retry behavior for transient failures"
+  
+  retryable_failures:
+    - "git push conflict (Law 9 race condition)"
+    - "GitHub API transient error (5xx)"
+    - "Network timeout"
+  
+  non_retryable_failures:
+    - "Law violations (expired, duplicate, trust)"
+    - "Malformed packet"
+    - "Permissions error"
+    - "CONFLICT_STALLED state (requires CONTROL/*)"
+  
+  retry_config:
+    max_attempts: 3
+    backoff:
+      type: "exponential"
+      initial_delay_seconds: 5
+      multiplier: 2
+      delays: [5, 10, 20]
+    
+    on_exhaustion:
+      action: "Increment failure_count in state.json"
+      threshold_check: "If failure_count >= 3, trigger CONTROL/REBOOT"
+
+genesis_template:
+  description: "Initial state.json for new cells or post-reboot"
+  template:
+    cell_id: "{repo_name}"
+    schema_version: "1.0.0"
+    current_state: "IDLE"
+    processing_count: 0
+    rejection_count: 0
+    failure_count: 0
+    stalled: false
+    stall_timestamp: null
+    stall_reason: null
+    isolation_mode: false
+    isolation_timestamp: null
+    isolation_reason: null
+    last_signal:
+      trace_id: null
+      idempotency_key: null
+      processed_at: null
+    last_reboot: null
+    reboot_reason: null
+    idempotency_buffer: []
+    history: []
+    echo_seal: "d2a5f4db8b7b136e9f1d99ae013938c3e7a86049a9446b1874f30bc084ff2b0e"
+
+monitoring:
+  post_recovery_checklist:
+    - "day_1: No regressions detected in signal processing"
+    - "day_1: State transitions logging correctly to ledger"
+    - "day_3: Signal processing rate returned to normal"
+    - "day_3: No unexpected state transitions"
+    - "day_7: No recovery signals required"
+    - "day_7: Ledger integrity verified"
+  
+  alerts:
+    stall_duration:
+      threshold: 60
+      unit: "minutes"
+      action: "Page on-call operator"
+    
+    reboot_frequency:
+      threshold: 3
+      window: "24 hours"
+      action: "Escalate — systemic issue"
+    
+    isolation_event:
+      action: "Immediate notification — security incident possible"
