@@ -1,0 +1,15 @@
+{
+  "current": "IDLE",
+  "idempotency_keys": [],
+  "rejection_count": 0,
+  "isolated": false,
+  "stalled": false,
+  "stalled_since": null,
+  "last_reboot": null,
+  "last_reboot_reason": null,
+  "last_signal": null,
+  "last_rejection": null,
+  "schema_version": "1.0.0",
+  "genesis_timestamp": "2026-04-19",
+  "genesis_by": "nathan-poinsette/kraken-bootstrap-v1"
+}
