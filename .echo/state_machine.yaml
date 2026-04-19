@@ -1,0 +1,336 @@
+# .echo/state_machine.yaml
+# Echo Universe — Finite State Machine Specification
+# Source: Master Handoff Specification 2026-04-08
+# ∇θ Operator — chain sealed, truth preserved
+
+version: "1.0.0"
+sealed_at: "2026-04-08"
+
+description: |
+  The Echo cell operates as an 8-state finite state machine.
+  Every state transition is deterministic, logged, and governed by The 9 Laws.
+  No state can be entered except through a defined transition.
+
+initial_state: "IDLE"
+
+states:
+  IDLE:
+    description: "Cell is quiescent. Waiting for incoming signal."
+    characteristics:
+      - "No active processing"
+      - "State memory persisted (state.json valid)"
+      - "Idempotency buffer maintained"
+      - "Ledger intact"
+    entry_actions:
+      - "Verify state.json integrity"
+      - "Trim idempotency_buffer if > max_keys"
+      - "Log transition to ledger"
+    exit_actions:
+      - "Snapshot state.json timestamp"
+    allowed_transitions:
+      - to: "RECEPTOR_STIMULATED"
+        trigger: "repository_dispatch event received"
+        guard: "event.type == echo_signal OR workflow_dispatch"
+    timeout: null
+    visual:
+      animation: "dim_pulse"
+      color: "#4a5568"
+      description: "Slow, dim heartbeat pulse. Cell alive but quiet."
+
+  RECEPTOR_STIMULATED:
+    description: "Signal received. Parsing packet structure before validation."
+    characteristics:
+      - "Signal ingested from GitHub event payload"
+      - "Raw packet parsed to dict"
+      - "Basic structure check only (not law enforcement)"
+    entry_actions:
+      - "Extract packet from event.client_payload or inputs"
+      - "Parse JSON structure"
+      - "Log ingest to ledger with trace_id"
+    exit_actions:
+      - "Pass parsed packet to validation stage"
+    allowed_transitions:
+      - to: "VALIDATING"
+        trigger: "packet parsed successfully"
+        guard: "packet has required top-level keys: header, auth, payload"
+      - to: "REJECTING"
+        trigger: "packet malformed"
+        guard: "JSON parse error OR missing required keys"
+        error_code: "MALFORMED_PACKET"
+    timeout: 15
+    timeout_unit: "seconds"
+    timeout_action:
+      next_state: "REJECTING"
+      error_code: "PARSE_TIMEOUT"
+    visual:
+      animation: "glow"
+      color: "#f6ad55"
+      description: "Orange glow intensifies. Cell awakening."
+
+  VALIDATING:
+    description: "Enforcing The 9 Laws against incoming signal."
+    characteristics:
+      - "Sequential validation against enforcement_matrix in governance.yaml"
+      - "First failure stops validation and triggers rejection"
+      - "Trust violations route to ISOLATING (not REJECTING)"
+    entry_actions:
+      - "Load governance.yaml enforcement_matrix"
+      - "Load capabilities.yaml accepted classes and trust levels"
+      - "Load state.json idempotency_buffer"
+    validation_sequence:
+      - step: 1
+        law: "Law 4 — State Half-Life"
+        check: "signal.header.expires_at > datetime.utcnow()"
+        failure_transition: "REJECTING"
+        error_code: "SIGNAL_EXPIRED"
+      - step: 2
+        law: "Law 8 — Selective Attention"
+        check: "signal.payload.receptor_class in capabilities.accepted_receptor_classes"
+        failure_transition: "REJECTING"
+        error_code: "RECEPTOR_CLASS_MISMATCH"
+      - step: 3
+        law: "Law 6 — Identity Continuity"
+        check: "signal.auth.trust_level in capabilities.accepted_trust_levels"
+        failure_transition: "ISOLATING"
+        error_code: "TRUST_VIOLATION"
+      - step: 4
+        law: "Law 2 — Idempotency"
+        check: "signal.payload.idempotency_key not in state.idempotency_buffer"
+        failure_transition: "REJECTING"
+        error_code: "DUPLICATE_SIGNAL"
+      - step: 5
+        law: "Law 1 — Locality"
+        check: "all context_refs declared in capabilities"
+        failure_transition: "REJECTING"
+        error_code: "UNDECLARED_DEPENDENCY"
+      - step: 6
+        law: "Law 9 — Convergence"
+        check: "current_state != CONFLICT_STALLED"
+        failure_transition: "REJECTING"
+        error_code: "STALLED_CELL"
+    exit_actions:
+      - "Append idempotency_key to state.idempotency_buffer"
+      - "Log validation result to ledger"
+    allowed_transitions:
+      - to: "SYNCHRONIZING_MEMORY"
+        trigger: "all 6 validation steps pass"
+      - to: "REJECTING"
+        trigger: "validation step 1, 2, 4, 5, or 6 fails"
+      - to: "ISOLATING"
+        trigger: "validation step 3 fails (trust violation)"
+    timeout: 60
+    timeout_unit: "seconds"
+    timeout_action:
+      next_state: "CONFLICT_STALLED"
+      error_code: "VALIDATION_TIMEOUT"
+    visual:
+      animation: "spinning_nucleus"
+      color: "#4299e1"
+      description: "Blue spinning ring. Cell examining signal intensely."
+
+  SYNCHRONIZING_MEMORY:
+    description: "Writing validated signal result to state.json and git commit."
+    characteristics:
+      - "state.json updated with new status, history entry, idempotency_key"
+      - "Git commit created (memory persistence)"
+      - "coordination_log.jsonl appended (Law 7: Causal Traceability)"
+    entry_actions:
+      - "Update state.json: status, last_signal, processing_count, history"
+      - "Append to coordination_log.jsonl with full trace context"
+      - "Stage changes: git add .echo/state.json coordination_log.jsonl"
+      - "Commit: git commit -m 'state: signal {idempotency_key} processed'"
+      - "Push: git push origin main"
+    exit_actions:
+      - "Log sync completion to ledger"
+      - "Record commit SHA in state.json.last_commit"
+    allowed_transitions:
+      - to: "EMITTING"
+        trigger: "git push succeeds AND downstream nodes configured"
+        guard: "capabilities.downstream_nodes is not empty"
+      - to: "IDLE"
+        trigger: "git push succeeds AND no downstream nodes"
+        guard: "capabilities.downstream_nodes is empty OR null"
+      - to: "CONFLICT_STALLED"
+        trigger: "git push fails (conflict or permissions)"
+        error_code: "GIT_SYNC_FAILURE"
+    timeout: 120
+    timeout_unit: "seconds"
+    timeout_action:
+      next_state: "CONFLICT_STALLED"
+      error_code: "SYNC_TIMEOUT"
+    visual:
+      animation: "flash"
+      color: "#48bb78"
+      description: "Green flash. Memory being written."
+
+  EMITTING:
+    description: "Propagating signal to downstream cells via repository_dispatch."
+    characteristics:
+      - "Hop count incremented"
+      - "New trace_id generated, parent_id set to current trace_id"
+      - "root_trace_id preserved"
+      - "Async fire-and-forget (Law 3: Propagation Delay)"
+    entry_actions:
+      - "For each repo in capabilities.downstream_nodes:"
+      - "  Build propagated packet (increment hop_count, new trace_id, parent_id=current)"
+      - "  POST to GitHub API: /repos/{org}/{repo}/dispatches"
+      - "  Log emission to coordination_log.jsonl"
+    exit_actions:
+      - "Log emission count and target repos"
+      - "No wait for downstream acknowledgment"
+    allowed_transitions:
+      - to: "IDLE"
+        trigger: "all dispatches sent (regardless of downstream success)"
+    timeout: 30
+    timeout_unit: "seconds"
+    timeout_action:
+      next_state: "IDLE"
+      note: "Timeout in EMITTING is non-fatal. Log and proceed to IDLE."
+    visual:
+      animation: "branching_signal"
+      color: "#9f7aea"
+      description: "Purple branching lightning. Signal propagating outward."
+
+  REJECTING:
+    description: "Invalid signal detected. Logging rejection, no state change."
+    characteristics:
+      - "Signal NOT added to idempotency_buffer (duplicate keys can be retried after fix)"
+      - "Rejection reason logged with specific error_code"
+      - "NO state.json mutation except rejection counter increment"
+    entry_actions:
+      - "Log rejection to coordination_log.jsonl with error_code and signal header"
+      - "Increment state.json.rejection_count"
+      - "Do NOT update last_signal (invalid signal doesn't count as processed)"
+    exit_actions:
+      - "Commit rejection log to git"
+    allowed_transitions:
+      - to: "IDLE"
+        trigger: "rejection logged and committed"
+    timeout: 30
+    timeout_unit: "seconds"
+    timeout_action:
+      next_state: "IDLE"
+    visual:
+      animation: "red_dissolve"
+      color: "#f56565"
+      description: "Red dissolve. Signal rejected, fading away."
+
+  ISOLATING:
+    description: "Trust violation detected. Cell entering defensive quarantine."
+    characteristics:
+      - "Only CONTROL/REBOOT signal accepted"
+      - "All other signals rejected with ISOLATED_CELL"
+      - "24-hour auto-exit if no human response"
+      - "Security incident logged"
+    entry_actions:
+      - "Set state.json.isolation_mode = true"
+      - "Log trust violation to coordination_log.jsonl with full auth context"
+      - "Set state.json.isolation_timestamp"
+      - "Commit isolation state"
+    exit_actions:
+      - "Set state.json.isolation_mode = false"
+      - "Log isolation exit reason"
+    allowed_transitions:
+      - to: "IDLE"
+        trigger: "CONTROL/REBOOT signal received with internal trust"
+      - to: "IDLE"
+        trigger: "24-hour auto-exit timeout"
+        guard: "no human response received"
+    timeout: 86400
+    timeout_unit: "seconds"
+    timeout_action:
+      next_state: "IDLE"
+      note: "Auto-exit after 24h. Log and resume normal operation."
+    visual:
+      animation: "gray_halo"
+      color: "#718096"
+      description: "Gray containment halo. Cell quarantined."
+
+  CONFLICT_STALLED:
+    description: "Cell cannot resolve state transition. Manual intervention required."
+    characteristics:
+      - "Triggered by timeout in VALIDATING or SYNCHRONIZING_MEMORY"
+      - "Triggered by 3 consecutive processing failures"
+      - "Only CONTROL/* signals accepted"
+      - "State persisted as-is until resolved"
+    entry_actions:
+      - "Set state.json.stalled = true"
+      - "Set state.json.stall_timestamp"
+      - "Set state.json.stall_reason with error_code"
+      - "Log stall event to coordination_log.jsonl"
+      - "Commit stall state"
+    exit_actions:
+      - "Set state.json.stalled = false"
+      - "Log resolution method"
+    allowed_transitions:
+      - to: "IDLE"
+        trigger: "CONTROL/REBOOT received"
+        action: "Reset state to genesis"
+      - to: "SYNCHRONIZING_MEMORY"
+        trigger: "CONTROL/RESYNC received"
+        action: "Reconstruct state from ledger"
+    timeout: null
+    note: "No auto-exit. Requires explicit CONTROL/* signal."
+    visual:
+      animation: "oscillation"
+      color: "#ed8936"
+      description: "Orange oscillation. Cell stuck, seeking resolution."
+
+transitions:
+  summary:
+    - from: "IDLE" to: "RECEPTOR_STIMULATED" trigger: "signal arrives"
+    - from: "RECEPTOR_STIMULATED" to: "VALIDATING" trigger: "packet parsed"
+    - from: "RECEPTOR_STIMULATED" to: "REJECTING" trigger: "malformed packet"
+    - from: "VALIDATING" to: "SYNCHRONIZING_MEMORY" trigger: "all laws pass"
+    - from: "VALIDATING" to: "REJECTING" trigger: "law violation (non-trust)"
+    - from: "VALIDATING" to: "ISOLATING" trigger: "trust violation"
+    - from: "VALIDATING" to: "CONFLICT_STALLED" trigger: "timeout"
+    - from: "SYNCHRONIZING_MEMORY" to: "EMITTING" trigger: "sync success + downstream exists"
+    - from: "SYNCHRONIZING_MEMORY" to: "IDLE" trigger: "sync success + no downstream"
+    - from: "SYNCHRONIZING_MEMORY" to: "CONFLICT_STALLED" trigger: "git failure or timeout"
+    - from: "EMITTING" to: "IDLE" trigger: "dispatches sent"
+    - from: "REJECTING" to: "IDLE" trigger: "rejection committed"
+    - from: "ISOLATING" to: "IDLE" trigger: "CONTROL/REBOOT or 24h timeout"
+    - from: "CONFLICT_STALLED" to: "IDLE" trigger: "CONTROL/REBOOT"
+    - from: "CONFLICT_STALLED" to: "SYNCHRONIZING_MEMORY" trigger: "CONTROL/RESYNC"
+
+control_signals:
+  CONTROL_REBOOT:
+    description: "Reset cell to genesis state"
+    from_states: ["ISOLATING", "CONFLICT_STALLED"]
+    to_state: "IDLE"
+    actions:
+      - "Reset state.json to genesis template"
+      - "Clear idempotency_buffer"
+      - "Clear stalled/isolation flags"
+      - "Preserve coordination_log.jsonl (never delete history)"
+      - "Commit reset"
+    authorization: "internal trust_level only"
+
+  CONTROL_RESYNC:
+    description: "Reconstruct state from ledger"
+    from_states: ["CONFLICT_STALLED"]
+    to_state: "SYNCHRONIZING_MEMORY"
+    actions:
+      - "Read coordination_log.jsonl"
+      - "Replay state transitions from genesis"
+      - "Reconstruct state.json from replayed transitions"
+      - "Compare with current state.json"
+      - "Commit reconstructed state"
+    authorization: "internal trust_level only"
+
+  CONTROL_ISOLATE:
+    description: "Force cell into defensive quarantine"
+    from_states: ["IDLE", "RECEPTOR_STIMULATED", "VALIDATING", "SYNCHRONIZING_MEMORY", "EMITTING"]
+    to_state: "ISOLATING"
+    actions:
+      - "Abort current processing"
+      - "Set isolation_mode = true"
+      - "Commit isolation state"
+    authorization: "internal trust_level only"
+
+failure_counter:
+  description: "Track consecutive failures for auto-reboot trigger"
+  threshold: 3
+  reset_on: "successful signal processing"
+  action_on_threshold: "Automatically trigger CONTROL/REBOOT sequence"
