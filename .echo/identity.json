@@ -1,0 +1,37 @@
+{
+  "node_id": "suhey-academy",
+  "tier": 1,
+  "role": "product",
+  "visibility": "public",
+  "capabilities": [
+    "language_learning"
+  ],
+  "declared_dependencies": [],
+  "communication": {
+    "event_bus": "github_repository_dispatch",
+    "receptor_class": [
+      "standard.v1"
+    ]
+  },
+  "trust": {
+    "score": 1.0,
+    "decay_rate": 0.05,
+    "quarantine_threshold": 0.5
+  },
+  "metabolism": {
+    "events_per_cycle": 20,
+    "api_calls_per_hour": 200,
+    "llm_tokens_per_day": 25000,
+    "compute_minutes_per_run": 8
+  },
+  "can_lead": true,
+  "listens_for": [
+    "health_check",
+    "sync_request",
+    "directive"
+  ],
+  "governance_ref": "echo-kraken-brain/.echo/governance.yaml",
+  "protocol_version": "kraken.v1",
+  "sealed_at": "2026-04-19",
+  "attribution": "Nathan Poinsette | Echo Universe | ∇θ"
+}
