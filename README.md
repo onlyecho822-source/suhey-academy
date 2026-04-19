@@ -1,5 +1,9 @@
 # Suhey Academy
 
+## Purpose
+
+> Suhey Academy - Learn Spanish with Suhey
+
 ## 📊 Repository Analytics
 
 [![RepoBeats](https://repobeats.axiom.co/api/embed/1188979485.svg)](https://github.com/onlyecho822-source/suhey-academy/pulse)
