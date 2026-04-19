@@ -1,37 +1,60 @@
 {
+  "version": "1.0.0",
   "node_id": "suhey-academy",
-  "tier": 1,
+  "tier": "TIER-2",
   "role": "product",
-  "visibility": "public",
+  "description": "Suhey Academy - Learn Spanish with Suhey",
   "capabilities": [
-    "language_learning"
+    "learn",
+    "education"
   ],
-  "declared_dependencies": [],
+  "dependencies": [],
   "communication": {
-    "event_bus": "github_repository_dispatch",
-    "receptor_class": [
-      "standard.v1"
-    ]
+    "protocols": [
+      "repository_dispatch",
+      "workflow_dispatch"
+    ],
+    "event_subjects": {
+      "subscribe": [
+        "echo.suhey-academy.*.task_offer",
+        "echo.coordinator.all.heartbeat"
+      ],
+      "publish": [
+        "echo.suhey-academy.*.task_result",
+        "echo.suhey-academy.*.error"
+      ]
+    }
+  },
+  "governance": {
+    "enforces_nine_laws": true,
+    "governance_source": "echo-kraken-brain/.echo/governance.yaml"
   },
   "trust": {
-    "score": 1.0,
-    "decay_rate": 0.05,
+    "initial_score": 1.0,
+    "decay_on_failure": 0.95,
+    "growth_on_success": 1.02,
     "quarantine_threshold": 0.5
   },
   "metabolism": {
     "events_per_cycle": 20,
     "api_calls_per_hour": 200,
-    "llm_tokens_per_day": 25000,
-    "compute_minutes_per_run": 8
+    "compute_minutes_per_run": 8,
+    "outbound_dispatches_per_event": 3
   },
-  "can_lead": true,
-  "listens_for": [
-    "health_check",
-    "sync_request",
-    "directive"
-  ],
-  "governance_ref": "echo-kraken-brain/.echo/governance.yaml",
-  "protocol_version": "kraken.v1",
-  "sealed_at": "2026-04-19",
-  "attribution": "Nathan Poinsette | Echo Universe | ∇θ"
+  "routing": {
+    "can_lead": false,
+    "listens_for": [
+      "failure",
+      "request_help",
+      "proposal",
+      "decision",
+      "sync"
+    ],
+    "cooldown_seconds": 60
+  },
+  "identity_seal": {
+    "operator": "Nathan Poinsette | onlyecho822-source | ∇θ",
+    "sealed_at": "2026-04-19",
+    "echo_seal_version": "1.0.0"
+  }
 }
