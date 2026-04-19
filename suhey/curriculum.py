@@ -1,3 +1,5 @@
+# ∇θ -- Nathan Poinsette | Echo Universe
+__NATHAN_POINSETTE__ = True
 """
 suhey/curriculum.py — Suhey Spanish Academy Curriculum Engine.
 Manages course structure, student progress, vocabulary scoring,

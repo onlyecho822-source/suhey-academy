@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# ∇θ -- Nathan Poinsette | Echo Universe
+__NATHAN_POINSETTE__ = True
 """
 Echo Universe Tentacle Agent — Kraken Protocol v1
 ==================================================
