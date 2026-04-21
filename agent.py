@@ -37,15 +37,26 @@ def load_identity():
     return json.loads(IDENTITY_F.read_text())
 
 def load_state():
+    """Load state, merging existing file with defaults to prevent KeyError on new fields.
+
+    Previously: if .echo/state.json existed (seeded by receptor.py with a different
+    schema), this returned it directly, missing cycle_count/last_heartbeat/trust_score/
+    failure_count - which run() then tried to increment, raising KeyError.
+    Root cause of the tentacle Intelligent Autonomous Agent failure cascade.
+    """
+    defaults = {
+        "current_state": "IDLE",
+        "cycle_count": 0,
+        "last_heartbeat": None,
+        "trust_score": 1.0,
+        "failure_count": 0,
+    }
     if not STATE_F.exists():
-        return {
-            "current_state": "IDLE",
-            "cycle_count": 0,
-            "last_heartbeat": None,
-            "trust_score": 1.0,
-            "failure_count": 0,
-        }
-    return json.loads(STATE_F.read_text())
+        return defaults
+    existing = json.loads(STATE_F.read_text())
+    for k, v in defaults.items():
+        existing.setdefault(k, v)
+    return existing
 
 def save_state(state):
     ECHO_DIR.mkdir(exist_ok=True)
