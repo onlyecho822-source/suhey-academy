@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0.0",
+  "last_updated": "2026-04-24T23:34:14.453965Z",
+  "short_term": {
+    "capacity": 100,
+    "events": []
+  },
+  "long_term": {
+    "capability_success_rates": {},
+    "force_success_rates": {},
+    "learned_patterns": [],
+    "instincts": []
+  }
+}
