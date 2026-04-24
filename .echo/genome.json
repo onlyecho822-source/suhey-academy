@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0.0",
+  "genome_id": "suhey-academy-genome-v1",
+  "node_id": "suhey-academy",
+  "generation": 0,
+  "created_at": "2026-04-24T23:34:14.453965Z",
+  "multireson_dna": {
+    "base_kappa": 0.618034,
+    "kappa_variance": 0.05,
+    "mutation_rate": 0.001
+  },
+  "harmonic_signature": {
+    "primary_forces": [
+      "Electricity",
+      "Intent",
+      "Resonance"
+    ],
+    "primary_chord": "Initiation"
+  },
+  "base_capabilities": [
+    "education-platform",
+    "education",
+    "static-site"
+  ],
+  "homeostasis_setpoints": {
+    "trust": 0.8,
+    "load": 0.5,
+    "tolerance": 0.1
+  },
+  "learning_rate": 0.05,
+  "mutation_allowed": true
+}
