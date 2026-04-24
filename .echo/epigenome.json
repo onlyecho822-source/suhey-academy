@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0.0",
+  "last_updated": "2026-04-24T23:34:14.453965Z",
+  "capability_expression": {
+    "education-platform": {
+      "active": true,
+      "expression": 0.8,
+      "success_count": 0,
+      "failure_count": 0
+    },
+    "education": {
+      "active": true,
+      "expression": 0.8,
+      "success_count": 0,
+      "failure_count": 0
+    },
+    "static-site": {
+      "active": true,
+      "expression": 0.8,
+      "success_count": 0,
+      "failure_count": 0
+    }
+  },
+  "force_expression": {
+    "Electricity": 0.8,
+    "Intent": 0.9,
+    "Resonance": 0.9,
+    "Memory": 0.5,
+    "Information": 0.7
+  }
+}
