@@ -1,16 +1,11 @@
-# ∇θ — Nathan Poinsette | Echo Universe
-# Heartbeat Workflow — fires on every push and every 6 hours
-# Runs genome.py (DNA) → biology.py (learning) → metabolism.py (healing) → heartbeat.py (pulse)
 name: Echo Heartbeat
 
 on:
-  push:
-    branches: [main, master]
   schedule:
     - cron: '0 */6 * * *'
   workflow_dispatch:
-  repository_dispatch:
-    types: [heartbeat, live_test.biology_verification, agent.cycle]
+  push:
+    branches: [main]
 
 permissions:
   contents: write
@@ -19,19 +14,9 @@ permissions:
 jobs:
   heartbeat:
     runs-on: ubuntu-latest
-    continue-on-error: false
-    outputs:
-      heartbeat_state: ${{ steps.pulse.outputs.heartbeat_state }}
-      heartbeat_score: ${{ steps.pulse.outputs.heartbeat_score }}
-      issues_found:    ${{ steps.pulse.outputs.issues_found }}
-      issues_healed:   ${{ steps.pulse.outputs.issues_healed }}
-      issues_blocked:  ${{ steps.pulse.outputs.issues_blocked }}
-
+    timeout-minutes: 10
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -39,33 +24,36 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: |
-          pip install --quiet requests python-dotenv || true
+        run: pip install requests
 
-      - name: Run Heartbeat Pulse
-        id: pulse
+      - name: Run Genome (DNA Rules)
+        run: python genome.py
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_RUN_ID: ${{ github.run_id }}
-          GITHUB_REF_NAME: ${{ github.ref_name }}
-          GITHUB_ACTOR: ${{ github.actor }}
+
+      - name: Run Metabolism (Event Processor)
+        run: python metabolism.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Heartbeat (Health Monitor)
         run: python heartbeat.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-      - name: Commit biology state changes
-        if: always()
+      - name: Update Nexus Map
         run: |
-          git config user.name  "echo-heartbeat[bot]"
-          git config user.email "heartbeat@echo-universe.internal"
-          git add .echo/epigenome.json .echo/memory.json .echo/genome.json coordination_log.jsonl 2>/dev/null || true
-          git diff --cached --quiet || git commit -m "heartbeat: update biology state [skip ci] [manus-ai]"
+          if [ -f nexus.py ]; then
+            python nexus.py --update-local || true
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit biology updates
+        run: |
+          git config user.name "echo-heartbeat[bot]"
+          git config user.email "heartbeat@echo-universe.ai"
+          git add .echo/ coordination_log.jsonl || true
+          git diff --cached --quiet || git commit -m "heartbeat: biology update [manus-ai] [skip ci]"
           git push || true
-
-      - name: Report state
-        if: always()
-        run: |
-          echo "State:   ${{ steps.pulse.outputs.heartbeat_state }}"
-          echo "Score:   ${{ steps.pulse.outputs.heartbeat_score }}"
-          echo "Found:   ${{ steps.pulse.outputs.issues_found }}"
-          echo "Healed:  ${{ steps.pulse.outputs.issues_healed }}"
-          echo "Blocked: ${{ steps.pulse.outputs.issues_blocked }}"
